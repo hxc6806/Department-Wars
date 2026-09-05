@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cqxcoxehal30y"]
 
-[ext_resource type="Texture2D" uid="uid://itexnlrrg21t" path="res://Pokemon Solgaleo GX Card.png" id="1_kikvd"]
+[ext_resource type="Texture2D" uid="uid://itexnlrrg21t" path="res://Assets/Pokemon Solgaleo GX Card.png" id="1_kikvd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_38brq"]
 size = Vector2(162, 240)
