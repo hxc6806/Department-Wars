@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://cqxcoxehal30y"]
 
 [ext_resource type="Texture2D" uid="uid://itexnlrrg21t" path="res://Assets/Pokemon Solgaleo GX Card.png" id="1_kikvd"]
+[ext_resource type="Script" uid="uid://c3b16dkxes5dn" path="res://Scripts/card.gd" id="1_wf8id"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_38brq"]
 size = Vector2(162, 240)
 
 [node name="Card" type="Node2D" unique_id=1853218625]
+script = ExtResource("1_wf8id")
 
 [node name="CardSprite" type="Sprite2D" parent="." unique_id=273941810]
 position = Vector2(1.0000305, -0.99993896)
@@ -17,3 +19,6 @@ texture = ExtResource("1_kikvd")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=495027676]
 position = Vector2(1, -1)
 shape = SubResource("RectangleShape2D_38brq")
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
