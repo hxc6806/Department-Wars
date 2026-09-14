@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://bb3jov00i73ow"]
+
+[ext_resource type="PackedScene" uid="uid://j2t8ss0kwjaw" path="res://Scenes/plr_health_UI.tscn" id="1_iukft"]
+[ext_resource type="PackedScene" uid="uid://dgjqh351orekl" path="res://Scenes/health.tscn" id="2_gl6un"]
+[ext_resource type="Script" uid="uid://bahvxwvov2aex" path="res://Scripts/tempscript.gd" id="3_j5yw3"]
+
+[node name="Game" type="Node" unique_id=31176504]
+
+[node name="Health" parent="." unique_id=1433802770 instance=ExtResource("2_gl6un")]
+
+[node name="plr_interface" parent="." unique_id=297676920 instance=ExtResource("1_iukft")]
+
+[node name="HealthBar" parent="plr_interface" index="2" unique_id=333432174 node_paths=PackedStringArray("health")]
+value = 100.0
+health = NodePath("../../Health")
+
+[node name="Button" type="Button" parent="." unique_id=965381548]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = -43.0
+offset_right = 157.0
+offset_bottom = 43.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "20 DMG"
+script = ExtResource("3_j5yw3")
+
+[editable path="plr_interface"]

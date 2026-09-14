@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Department Wars"
-run/main_scene="uid://df2pk3mpy12ut"
+run/main_scene="uid://bb3jov00i73ow"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://Assets/icon.svg"
 
