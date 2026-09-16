@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://twi400q5pdvl"]
 
 [ext_resource type="Script" uid="uid://wdfwp8kw0crq" path="res://Scripts/card_manager.gd" id="1_b25br"]
+[ext_resource type="PackedScene" uid="uid://dgjqh351orekl" path="res://Scenes/health.tscn" id="1_ed262"]
+[ext_resource type="Script" uid="uid://tdu2bi6m708e" path="res://Scenes/enemy_container.gd" id="1_ms847"]
+[ext_resource type="PackedScene" uid="uid://j2t8ss0kwjaw" path="res://Scenes/plr_health_UI.tscn" id="1_w4764"]
 [ext_resource type="Script" uid="uid://quq8vjxmfxup" path="res://Scripts/player_hand.gd" id="2_anwxn"]
-[ext_resource type="PackedScene" uid="uid://cu4ykow08ayft" path="res://Scenes/card_slot.tscn" id="3_e5vbs"]
-[ext_resource type="Script" uid="uid://bms4x2haehfhn" path="res://Scripts/card_slot.gd" id="4_3gnqe"]
 [ext_resource type="Texture2D" uid="uid://b1fceyaqdmwqm" path="res://Assets/WZ Deck.png" id="5_3gnqe"]
 [ext_resource type="Script" uid="uid://b2jrt8x7e8726" path="res://Scripts/deck.gd" id="5_gt16y"]
 [ext_resource type="Script" uid="uid://ohww5iwwibka" path="res://Scripts/input_manager.gd" id="7_20f6w"]
@@ -11,42 +12,60 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_38brq"]
 size = Vector2(246.08943, 320.3244)
 
-[node name="BattleScene" type="Node2D" unique_id=1943770920]
+[node name="Node" type="Node" unique_id=1754938483]
 
-[node name="CardManager" type="Node2D" parent="." unique_id=652582119]
+[node name="enemy_container" type="HBoxContainer" parent="." unique_id=140514638]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -809.0
+offset_top = -202.0
+offset_right = 809.0
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+script = ExtResource("1_ms847")
+
+[node name="plr" type="Node" parent="." unique_id=693879004]
+
+[node name="Health" parent="plr" unique_id=1433802770 instance=ExtResource("1_ed262")]
+
+[node name="plr_interface" parent="plr" unique_id=297676920 instance=ExtResource("1_w4764")]
+offset_top = 97.91998
+offset_bottom = -20.0
+
+[node name="HealthBar" parent="plr/plr_interface" index="2" unique_id=333432174 node_paths=PackedStringArray("health")]
+health = NodePath("../../Health")
+
+[node name="CardManager" type="Node2D" parent="plr" unique_id=652582119]
 script = ExtResource("1_b25br")
 
-[node name="PlayerHand" type="Node2D" parent="CardManager" unique_id=1637803997]
+[node name="PlayerHand" type="Node2D" parent="plr/CardManager" unique_id=1637803997]
 script = ExtResource("2_anwxn")
 
-[node name="CardSlot" parent="." unique_id=362924030 instance=ExtResource("3_e5vbs")]
-position = Vector2(521, 377)
-script = ExtResource("4_3gnqe")
-
-[node name="CardSlot2" parent="." unique_id=54654811 instance=ExtResource("3_e5vbs")]
-position = Vector2(1404, 388)
-script = ExtResource("4_3gnqe")
-
-[node name="Deck" type="Node2D" parent="." unique_id=1507099428]
-position = Vector2(180, 870)
+[node name="Deck" type="Node2D" parent="plr" unique_id=1507099428]
+position = Vector2(153, 769)
 script = ExtResource("5_gt16y")
 
-[node name="DeckSprite" type="Sprite2D" parent="Deck" unique_id=1446243019]
+[node name="DeckSprite" type="Sprite2D" parent="plr/Deck" unique_id=1446243019]
 z_index = -2
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("5_3gnqe")
 
-[node name="Area2D" type="Area2D" parent="Deck" unique_id=1768173933]
+[node name="Area2D" type="Area2D" parent="plr/Deck" unique_id=1768173933]
 collision_layer = 4
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Deck/Area2D" unique_id=2088218785]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="plr/Deck/Area2D" unique_id=2088218785]
 position = Vector2(-5.7592163, 0.736084)
 rotation = 0.7884821
 scale = Vector2(0.8, 0.8)
 shape = SubResource("RectangleShape2D_38brq")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Deck" unique_id=296107237]
+[node name="RichTextLabel" type="RichTextLabel" parent="plr/Deck" unique_id=296107237]
 modulate = Color(0, 0, 0, 1)
 z_index = -2
 offset_left = 62.0
@@ -57,5 +76,7 @@ scale = Vector2(4.2, 4.653)
 theme_override_font_sizes/normal_font_size = 24
 text = "0"
 
-[node name="InputManager" type="Node2D" parent="." unique_id=1892183124]
+[node name="InputManager" type="Node2D" parent="plr" unique_id=1892183124]
 script = ExtResource("7_20f6w")
+
+[editable path="plr/plr_interface"]

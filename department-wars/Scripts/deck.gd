@@ -22,6 +22,14 @@ func draw_card():
 	
 	var card_scene = preload(CARD_SCENE_PATH)
 	var new_card = card_scene.instantiate()
+	
+	# retrieve a random card
+	var data = card_data.get_data(card_data.get_keys().pick_random())
+	
+	new_card.name = data.name
+	new_card.get_node("CardSprite").texture = data.texture
+	#
+	
 	new_card.position = self.position
 	$"../CardManager".add_child.call_deferred(new_card)
 	new_card.name = "card"
