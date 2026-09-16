@@ -1,13 +1,14 @@
 extends Node2D
 
 const COLLISION_MASK_CARD = 1
-const COLLISION_MASK_CARD_SLOT = 2
 const DEFAULT_CARD_SPEED = 0.1
 
 var screen_size: Vector2
 var card_being_dragged = null
 var is_hovering_on_card
 var player_hand_ref
+
+@onready var enemy_container = $"../../enemy_container"
 
 func _ready() -> void:
 	screen_size = get_viewport_rect().size
@@ -30,15 +31,11 @@ func raycast_check_for_card():
 		return get_card_with_highest_z_index(result)
 	return null
 	
-func raycast_check_for_card_slot():
-	var space_state = get_viewport().world_2d.direct_space_state
-	var parameters = PhysicsPointQueryParameters2D.new()
-	parameters.position = get_viewport().get_mouse_position()
-	parameters.collide_with_areas = true
-	parameters.collision_mask = COLLISION_MASK_CARD_SLOT
-	var result = space_state.intersect_point(parameters)
-	if result.size() > 0:
-		return result[0].collider.get_parent()
+func get_enemy_under_mouse():
+	var mouse_pos = get_global_mouse_position()
+	for enemy in enemy_container.get_children():
+		if enemy.get_global_rect().has_point(mouse_pos):
+			return enemy
 	return null
 
 func connect_card_signals(card):
@@ -86,13 +83,16 @@ func start_drag(card):
 
 func finish_drag():
 	if card_being_dragged:
-		card_being_dragged.scale = Vector2(1.05, 1.05)
-		var card_slot_found = raycast_check_for_card_slot()
-		if card_slot_found and not card_slot_found.card_slotted:
-			card_being_dragged.position = card_slot_found.position
-			card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
-			card_slot_found.card_slotted = true
+		var enemy = get_enemy_under_mouse()
+		if enemy:
+			# affect enemy
+			card_data.get_data(card_being_dragged.card_id)['functionality'].call(enemy)
+			
+			# use card
+			player_hand_ref.remove_card_from_hand(card_being_dragged)
+			card_being_dragged.queue_free()
 		else:
+			card_being_dragged.scale = Vector2(1.05, 1.05)
 			player_hand_ref.add_card_to_hand(card_being_dragged, DEFAULT_CARD_SPEED)
 	card_being_dragged = null
 

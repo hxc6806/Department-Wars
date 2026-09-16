@@ -26,7 +26,7 @@ func draw_card():
 	# retrieve a random card
 	var data = card_data.get_data(card_data.get_keys().pick_random())
 	
-	new_card.name = data.name
+	new_card.card_id = data.name
 	new_card.get_node("CardSprite").texture = data.texture
 	#
 	
