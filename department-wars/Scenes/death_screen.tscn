@@ -1,0 +1,131 @@
+[gd_scene format=3 uid="uid://roh4jysa4nu1"]
+
+[ext_resource type="Script" uid="uid://cllmmt10r5uw3" path="res://Scenes/death_screen.gd" id="1_tseak"]
+[ext_resource type="Texture2D" uid="uid://dvqke3cyyk7y3" path="res://Assets/360_F_1183353574_NIqTGmHSQIVK5ljuKxwIGrIHbcHNLh2m.jpg" id="2_amiou"]
+[ext_resource type="FontFile" uid="uid://cthj24jjfrhwh" path="res://Assets/pixel_font.ttf" id="3_vb6s7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tpvs2"]
+texture = ExtResource("2_amiou")
+modulate_color = Color(0.3515629, 0.3515629, 0.35156286, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3qio"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dmfwj"]
+bg_color = Color(0.40451086, 0.40451124, 0.40451103, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r1r1s"]
+bg_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_avkmx"]
+
+[node name="DeathScreen" type="Control" unique_id=1948627922]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tseak")
+
+[node name="Panel" type="Panel" parent="." unique_id=1128763508]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_tpvs2")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=687644197]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08235294, 0.08235294, 0.12156863, 0.6)
+
+[node name="Title" type="Label" parent="." unique_id=2065809618]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -140.0
+offset_right = 400.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.38431373, 0.38431373, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 5
+theme_override_fonts/font = ExtResource("3_vb6s7")
+theme_override_font_sizes/font_size = 64
+text = "YOU DIED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subtitle" type="Label" parent="." unique_id=407415052]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -92.0
+offset_top = -17.0
+offset_right = 92.0
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8352941, 0.78431374, 0.73333335, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "Your run is over"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ReturnButton" type="Button" parent="." unique_id=1509466875]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = 90.0
+offset_right = 180.0
+offset_bottom = 154.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_l3qio")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_dmfwj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r1r1s")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_avkmx")
+text = "Return to Menu
+"
