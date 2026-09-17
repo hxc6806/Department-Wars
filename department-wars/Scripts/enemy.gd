@@ -4,13 +4,20 @@ const BAR_GAP = 10.0   # pixels between sprite top and bar bottom
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var health_bar: TextureProgressBar = $HealthBar
+@onready var health: Health = $Health
+@onready var dmg_label: Label = $dmg_label
 
 func _ready() -> void:
 	var sprite_size = sprite.get_rect().size * sprite.scale
 	custom_minimum_size = sprite_size      # HBox now reserves this much room
 	sprite.position = sprite_size / 2.0    # centre the sprite inside the box
 	position_health_bar()
-	print(name, " size=", sprite_size, " sprite=", sprite.position, " bar=", health_bar.position, " barsize=", health_bar.size, " centered=", sprite.centered)
+	health.health_changed.connect(on_dmg_taken)
+	
+func on_dmg_taken(amount):
+	dmg_label.text = str(amount)
+	await get_tree().create_timer(0.5).timeout
+	dmg_label.text = ""
 
 func position_health_bar() -> void:
 	var sprite_size = sprite.get_rect().size * sprite.scale   # texture size x scale

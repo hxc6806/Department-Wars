@@ -7,6 +7,6 @@ func _ready() -> void:
 	value = health.current_health
 	health.health_changed.connect(_update_health)
 
-func _update_health() -> void:
+func _update_health(amount) -> void:
 	value = health.current_health
 	
