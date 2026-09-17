@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://8jwv0xei1gq4"]
+
+[ext_resource type="Texture2D" uid="uid://cqxohyrvw1dsq" path="res://Assets/CardSprites/Fireball.png" id="1_34uyq"]
+[ext_resource type="Script" uid="uid://c6rnvsundxu7h" path="res://Scripts/card_pool.gd" id="1_wtq7l"]
+[ext_resource type="Script" uid="uid://c7fkkalsnt5dd" path="res://Scripts/card_select.gd" id="2_wtq7l"]
+
+[node name="CardSelect" type="Node" unique_id=1387982329]
+script = ExtResource("1_wtq7l")
+
+[node name="card2" type="TextureButton" parent="." unique_id=1509947668]
+self_modulate = Color(1, 1, 1, 0.5019608)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -252.5
+offset_top = -471.5
+offset_right = 252.5
+offset_bottom = 215.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("1_34uyq")
+script = ExtResource("2_wtq7l")
+
+[node name="card3" type="TextureButton" parent="." unique_id=1948506516]
+self_modulate = Color(1, 1, 1, 0.5019608)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 363.5
+offset_top = -471.5
+offset_right = 868.5
+offset_bottom = 215.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("1_34uyq")
+script = ExtResource("2_wtq7l")
+
+[node name="card1" type="TextureButton" parent="." unique_id=1178523796]
+self_modulate = Color(1, 1, 1, 0.5019608)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -852.5
+offset_top = -471.5
+offset_right = -347.5
+offset_bottom = 215.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("1_34uyq")
+script = ExtResource("2_wtq7l")

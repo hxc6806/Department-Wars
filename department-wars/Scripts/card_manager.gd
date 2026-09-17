@@ -8,7 +8,7 @@ var card_being_dragged = null
 var is_hovering_on_card
 var player_hand_ref
 
-@onready var enemy_container = $"../../enemy_container"
+@onready var enemy_container = $"../enemy_container"
 
 func _ready() -> void:
 	screen_size = get_viewport_rect().size

@@ -10,7 +10,13 @@ static var CARDS = {
 	'Slash': {
 		"name": 'Slash',
 		"texture": preload("res://Assets/CardSprites/Slash.png"),
-		"functionality": func(target): target.get_node("Health").dmg(5)
+		"functionality": func(target): target.get_node("Health").dmg(405)
+	},
+	
+	'Curse': {
+		"name": 'Curse',
+		"texture": preload("res://Assets/CardSprites/Curse.png"),
+		"functionality": func(target): target.get_node("Health").dmg(55)
 	}
 }
 

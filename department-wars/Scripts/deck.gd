@@ -1,30 +1,36 @@
+class_name deck
 extends Node2D
 
 const CARD_SCENE_PATH = "res://Scenes/card.tscn"
 const CARD_DRAW_SPEED = 0.4
 
-var player_deck = ["card", "card", "card"]
+static var player_deck = {
+	"Fireball": 1,
+	"Slash": 3
+}
+static var deck_size = 5
+var in_deck = deck_size
 
 func _ready() -> void:
-	$RichTextLabel.text = str(player_deck.size())
+	$RichTextLabel.text = str(in_deck)
 
 func draw_card():
-	if player_deck.size() == 0:
+	if in_deck == 0:
 		return
 	
-	var card_drawn = player_deck[0]
-	player_deck.erase(card_drawn)
-	if player_deck.size() == 0:
-		$Area2D/CollisionShape2D.disabled = true
-		$DeckSprite.visible = false
-		$RichTextLabel.visible = false
-	$RichTextLabel.text = str(player_deck.size())
+	in_deck -= 1
+	$RichTextLabel.text = str(in_deck)
 	
 	var card_scene = preload(CARD_SCENE_PATH)
 	var new_card = card_scene.instantiate()
 	
 	# retrieve a random card
-	var data = card_data.get_data(card_data.get_keys().pick_random())
+	var keys = []
+	for key in player_deck:
+		for i in range(0, player_deck[key]):
+			keys.append(key)
+	
+	var data = card_data.get_data(keys.pick_random())
 	
 	new_card.card_id = data.name
 	new_card.get_node("CardSprite").texture = data.texture
