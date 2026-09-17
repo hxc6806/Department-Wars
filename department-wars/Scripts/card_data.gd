@@ -4,7 +4,7 @@ static var CARDS = {
 	'Fireball': {
 		"name": 'Fireball',
 		"texture": preload("res://Assets/CardSprites/Fireball.png"),
-		"functionality": func(target): target.get_node("Health").dmg(15)
+		"functionality": func(target): target.get_node("Health").dmg(95)
 	},
 	
 	'Slash': {
