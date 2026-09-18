@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://bkeg0e4e21oq2"]
+
+[ext_resource type="PackedScene" uid="uid://dmueptcnebxpc" path="res://Scenes/health_bar.tscn" id="1_1f0kj"]
+[ext_resource type="Script" uid="uid://dqs6pw35r6suu" path="res://Scripts/enemy.gd" id="1_287tu"]
+[ext_resource type="PackedScene" uid="uid://dgjqh351orekl" path="res://Scenes/health.tscn" id="1_afpow"]
+[ext_resource type="Texture2D" uid="uid://xddohq7vq15r" path="res://Assets/EnemySprites/Mushscroom.png" id="4_287tu"]
+
+[node name="enemy" type="Control" unique_id=634793069]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_287tu")
+
+[node name="Health" parent="." unique_id=1433802770 instance=ExtResource("1_afpow")]
+
+[node name="HealthBar" parent="." unique_id=333432174 node_paths=PackedStringArray("health") instance=ExtResource("1_1f0kj")]
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 290.0
+offset_bottom = 35.0
+grow_horizontal = 1
+grow_vertical = 1
+health = NodePath("../Health")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=826840475]
+scale = Vector2(0.45618153, 0.47421733)
+texture = ExtResource("4_287tu")
+
+[node name="dmg_label" type="Label" parent="." unique_id=622204216]
+z_index = 3
+layout_mode = 0
+offset_right = 58.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 50

@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://twi400q5pdvl"]
+
+[ext_resource type="Script" uid="uid://tdu2bi6m708e" path="res://Scripts/enemy_container.gd" id="1_ms847"]
+[ext_resource type="PackedScene" uid="uid://bcgukqc3ok83l" path="res://Scenes/card_manager.tscn" id="2_e5vbs"]
+[ext_resource type="PackedScene" uid="uid://djty5s1wkxcdx" path="res://Scenes/deck.tscn" id="3_3gnqe"]
+[ext_resource type="Script" uid="uid://ohww5iwwibka" path="res://Scripts/input_manager.gd" id="7_20f6w"]
+
+[node name="battle_scene" type="Node" unique_id=1754938483]
+
+[node name="enemy_container" type="HBoxContainer" parent="." unique_id=140514638]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -809.0
+offset_top = -202.0
+offset_right = 809.0
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+script = ExtResource("1_ms847")
+
+[node name="CardManager" parent="." unique_id=498706296 instance=ExtResource("2_e5vbs")]
+
+[node name="Deck" parent="." unique_id=1058168315 instance=ExtResource("3_3gnqe")]
+position = Vector2(153, 769)
+
+[node name="InputManager" type="Node2D" parent="." unique_id=1892183124]
+script = ExtResource("7_20f6w")

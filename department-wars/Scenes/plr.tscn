@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dhtbo731a2365"]
+
+[ext_resource type="PackedScene" uid="uid://dgjqh351orekl" path="res://Scenes/health.tscn" id="1_7jqmt"]
+[ext_resource type="PackedScene" uid="uid://j2t8ss0kwjaw" path="res://Scenes/plr_health_UI.tscn" id="2_a5t15"]
+
+[node name="plr" type="Node" unique_id=1300282196]
+
+[node name="Health" parent="." unique_id=1433802770 instance=ExtResource("1_7jqmt")]
+
+[node name="plr_interface" parent="." unique_id=297676920 instance=ExtResource("2_a5t15")]
+offset_top = 97.91998
+offset_bottom = -20.0
+
+[node name="HealthBar" parent="plr_interface" index="2" unique_id=333432174 node_paths=PackedStringArray("health")]
+health = NodePath("../../Health")
+
+[editable path="plr_interface"]

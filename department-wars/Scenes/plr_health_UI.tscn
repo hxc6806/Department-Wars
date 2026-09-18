@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://j2t8ss0kwjaw"]
+
+[ext_resource type="Texture2D" uid="uid://chkov1fvb0wx1" path="res://Assets/pngtree-black-ring-png-image_2319174.png" id="1_n8a3y"]
+[ext_resource type="PackedScene" uid="uid://dmueptcnebxpc" path="res://Scenes/health_bar.tscn" id="2_ljdmq"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_eu43n"]
+load_path = "res://.godot/imported/cream-color-solid-background-1920x1080.png-edd712e00df08f4701136595993ce459.ctex"
+
+[node name="plr_interface" type="Control" unique_id=297676920]
+layout_mode = 3
+anchor_top = 0.776
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 123.91998
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="background" type="TextureRect" parent="." unique_id=77630689]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CompressedTexture2D_eu43n")
+expand_mode = 1
+
+[node name="plr_img" type="TextureRect" parent="." unique_id=1665018525]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 76.0
+offset_top = -53.5
+offset_right = 175.0
+offset_bottom = 49.5
+grow_vertical = 2
+texture = ExtResource("1_n8a3y")
+expand_mode = 1
+
+[node name="HealthBar" parent="." unique_id=333432174 instance=ExtResource("2_ljdmq")]
+layout_mode = 1
+offset_left = -644.0
+offset_top = -17.0
+offset_right = -390.0
+offset_bottom = 18.0
