@@ -3,6 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://dvqke3cyyk7y3" path="res://Assets/360_F_1183353574_NIqTGmHSQIVK5ljuKxwIGrIHbcHNLh2m.jpg" id="1_48xlc"]
 [ext_resource type="FontFile" uid="uid://cthj24jjfrhwh" path="res://Assets/pixel_font.ttf" id="2_1ehe0"]
 
+[ext_resource type="Script" path="res://Scripts/main_menu.gd" id="3_menu"]
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xaec"]
 texture = ExtResource("1_48xlc")
 modulate_color = Color(0.3515629, 0.3515629, 0.35156286, 1)
@@ -66,6 +68,7 @@ corner_radius_bottom_left = 16
 shadow_offset = Vector2(0, 3.41)
 
 [node name="MainMenu" type="Control" unique_id=166822406]
+script = ExtResource("3_menu")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

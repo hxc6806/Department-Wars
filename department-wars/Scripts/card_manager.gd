@@ -9,9 +9,11 @@ signal energy_changed(available: int)
 @export var max_energy: int = 3
 var current_energy: int = 0
 var energy_label: Label
+var player_turn: bool = true
+var run_ended: bool = false
 
 func can_afford(card_id: String) -> bool:
-	return current_energy >= int(card_data.get_data(card_id)["energy_cost"])
+	return player_turn and not run_ended and enemy_container.enemy_count > 0 and current_energy >= int(card_data.get_data(card_id)["energy_cost"])
 
 func _create_energy_display() -> void:
 	var layer := CanvasLayer.new()
@@ -55,6 +57,9 @@ func _ready() -> void:
 	screen_size = get_viewport_rect().size
 	player_hand_ref = $PlayerHand
 	$"../InputManager".connect("left_mouse_button_released", on_left_click_released)
+	var turns = preload("res://Scripts/battle_turns.gd").new()
+	turns.name = "BattleTurns"
+	add_child(turns)
 
 func _process(_delta: float) -> void:
 	if card_being_dragged:
@@ -75,7 +80,7 @@ func raycast_check_for_card():
 func get_enemy_under_mouse():
 	var mouse_pos = get_global_mouse_position()
 	for enemy in enemy_container.get_children():
-		if enemy.get_global_rect().has_point(mouse_pos):
+		if not enemy.get_node("Health").isdead() and enemy.get_global_rect().has_point(mouse_pos):
 			return enemy
 	return null
 
@@ -119,6 +124,8 @@ func get_card_with_highest_z_index(cards):
 	return highest_z_card
 
 func start_drag(card):
+	if not player_turn or run_ended or enemy_container.enemy_count <= 0:
+		return
 	card_being_dragged = card
 	card.scale = Vector2(1.0, 1.0)
 
