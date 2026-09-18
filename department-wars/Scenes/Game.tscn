@@ -2,8 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://dhtbo731a2365" path="res://Scenes/plr.tscn" id="1_gl6un"]
 [ext_resource type="PackedScene" uid="uid://twi400q5pdvl" path="res://Scenes/battle_scene.tscn" id="2_j5yw3"]
+[ext_resource type="Script" uid="uid://dneq0phbcq3c" path="res://Scripts/run_setup.gd" id="3_run"]
 
 [node name="Game" type="Node" unique_id=31176504]
+script = ExtResource("3_run")
 
 [node name="plr" parent="." unique_id=1300282196 instance=ExtResource("1_gl6un")]
 
