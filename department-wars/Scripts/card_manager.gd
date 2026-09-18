@@ -3,6 +3,45 @@ extends Node2D
 const COLLISION_MASK_CARD = 1
 const DEFAULT_CARD_SPEED = 0.1
 
+signal energy_changed(available: int)
+
+# Provisional balance: a fresh battle starts with three energy.
+@export var max_energy: int = 3
+var current_energy: int = 0
+var energy_label: Label
+
+func can_afford(card_id: String) -> bool:
+	return current_energy >= int(card_data.get_data(card_id)["energy_cost"])
+
+func _create_energy_display() -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "EnergyHUD"
+	add_child(layer)
+	var panel := PanelContainer.new()
+	panel.position = Vector2(28, 28)
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("151b2bee")
+	style.border_color = Color("f1c66d")
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(12)
+	style.content_margin_left = 20
+	style.content_margin_right = 20
+	style.content_margin_top = 12
+	style.content_margin_bottom = 12
+	panel.add_theme_stylebox_override("panel", style)
+	layer.add_child(panel)
+	energy_label = Label.new()
+	energy_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	energy_label.add_theme_font_size_override("font_size", 28)
+	energy_label.add_theme_color_override("font_color", Color("f1c66d"))
+	panel.add_child(energy_label)
+	_update_energy_display()
+
+func _update_energy_display() -> void:
+	energy_label.text = "ENERGY  %d / %d" % [current_energy, max_energy]
+	energy_changed.emit(current_energy)
+
 var screen_size: Vector2
 var card_being_dragged = null
 var is_hovering_on_card
@@ -11,6 +50,8 @@ var player_hand_ref
 @onready var enemy_container = $"../enemy_container"
 
 func _ready() -> void:
+	current_energy = maxi(0, max_energy)
+	_create_energy_display()
 	screen_size = get_viewport_rect().size
 	player_hand_ref = $PlayerHand
 	$"../InputManager".connect("left_mouse_button_released", on_left_click_released)
@@ -84,7 +125,9 @@ func start_drag(card):
 func finish_drag():
 	if card_being_dragged:
 		var enemy = get_enemy_under_mouse()
-		if enemy:
+		if enemy and can_afford(str(card_being_dragged.card_id)):
+			current_energy -= int(card_data.get_data(card_being_dragged.card_id)["energy_cost"])
+			_update_energy_display()
 			# affect enemy
 			card_data.get_data(card_being_dragged.card_id)['functionality'].call(enemy)
 			
