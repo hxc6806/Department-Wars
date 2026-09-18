@@ -1,6 +1,5 @@
 extends Node
 
-# Starter balance; each surviving enemy attacks once at end of turn.
 const ENEMY_DAMAGE := 4
 var manager
 var player_health: Health
@@ -65,7 +64,6 @@ func end_turn() -> void:
 	end_button.disabled = true
 	manager.card_being_dragged = null
 	manager.is_hovering_on_card = false
-	# Unplayed cards are discarded; next turn builds a fresh draw pile.
 	for card in manager.player_hand_ref.player_hand:
 		card.queue_free()
 	manager.player_hand_ref.player_hand.clear()
@@ -92,7 +90,6 @@ func _on_player_died() -> void:
 	manager.card_being_dragged = null
 	end_button.disabled = true
 	status_label.text = "RUN OVER"
-	# Scene replacement is deferred until health signals finish dispatching.
 	call_deferred("_show_death_screen")
 
 func _show_death_screen() -> void:

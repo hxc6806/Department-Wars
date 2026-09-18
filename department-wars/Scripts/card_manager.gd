@@ -5,7 +5,6 @@ const DEFAULT_CARD_SPEED = 0.1
 
 signal energy_changed(available: int)
 
-# Provisional balance: a fresh battle starts with three energy.
 @export var max_energy: int = 3
 var current_energy: int = 0
 var energy_label: Label
@@ -135,10 +134,8 @@ func finish_drag():
 		if enemy and can_afford(str(card_being_dragged.card_id)):
 			current_energy -= int(card_data.get_data(card_being_dragged.card_id)["energy_cost"])
 			_update_energy_display()
-			# affect enemy
 			card_data.get_data(card_being_dragged.card_id)['functionality'].call(enemy)
 			
-			# use card
 			player_hand_ref.remove_card_from_hand(card_being_dragged)
 			card_being_dragged.queue_free()
 		else:

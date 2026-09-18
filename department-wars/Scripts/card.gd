@@ -16,7 +16,6 @@ func _ready() -> void:
 	_update_affordability(get_parent().current_energy)
 
 func _create_cost_indicator() -> void:
-	# Overlay controls ignore mouse input so dragging still reaches the card.
 	var badge := PanelContainer.new()
 	badge.name = "EnergyCostBadge"
 	badge.position = Vector2(-78, -118)

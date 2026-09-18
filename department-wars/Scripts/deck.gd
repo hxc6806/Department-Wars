@@ -8,7 +8,7 @@ static var player_deck = {
 	"Fireball": 1,
 	"Slash": 3
 }
-static var deck_size = 5 # Maximum draws per turn, limited by owned cards.
+static var deck_size = 5 
 var in_deck := 0
 var draw_pile: Array = []
 
