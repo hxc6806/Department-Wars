@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ckul4t6rorqb3"
+path="res://.godot/imported/Melancholic Orchestral Worldbuilding Music The Seraphina (No Copyright).mp3-84efc2cbe01c5f31f8d3dae41a00ba6b.mp3str"
+
+[deps]
+
+source_file="res://Scenes/Melancholic Orchestral Worldbuilding Music The Seraphina (No Copyright).mp3"
+dest_files=["res://.godot/imported/Melancholic Orchestral Worldbuilding Music The Seraphina (No Copyright).mp3-84efc2cbe01c5f31f8d3dae41a00ba6b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
