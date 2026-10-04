@@ -1,6 +1,8 @@
 class_name deck
 extends Node2D
 
+signal deck_right_clicked
+
 const CARD_SCENE_PATH = "res://Scenes/card.tscn"
 const CARD_DRAW_SPEED = 0.4
 
@@ -14,6 +16,11 @@ var draw_pile: Array = []
 
 func _ready() -> void:
 	reset_for_turn()
+	$Area2D.input_event.connect(_on_area_2d_input_event)
+
+func _on_area_2d_input_event(viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+		deck_right_clicked.emit()
 
 func reset_for_turn() -> void:
 	draw_pile.clear()
