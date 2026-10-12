@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1yjc3rnbbjfk"
-path="res://.godot/imported/slash.svg-768d4735439d2c10284e8997badacb70.ctex"
+uid="uid://d2kwgggskfood"
+path="res://.godot/imported/curse.svg-37b58ada1661198113ccf92303801124.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/CardSprites/Clean/slash.svg"
-dest_files=["res://.godot/imported/slash.svg-768d4735439d2c10284e8997badacb70.ctex"]
+source_file="res://Clean/Source/curse.svg"
+dest_files=["res://.godot/imported/curse.svg-37b58ada1661198113ccf92303801124.ctex"]
 
 [params]
 

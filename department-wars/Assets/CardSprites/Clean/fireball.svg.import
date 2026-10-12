@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csmfe88sfsl72"
-path="res://.godot/imported/slash.svg-c8d6e79ee2ab9a938109cf0bd490b641.ctex"
+uid="uid://brdtkh2jl0v3n"
+path="res://.godot/imported/fireball.svg-0b4ed3ca5474b0a6261da6b7a3c5967f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/CardSprites/Clean/Source/slash.svg"
-dest_files=["res://.godot/imported/slash.svg-c8d6e79ee2ab9a938109cf0bd490b641.ctex"]
+source_file="res://Clean/fireball.svg"
+dest_files=["res://.godot/imported/fireball.svg-0b4ed3ca5474b0a6261da6b7a3c5967f.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bblxm32wafhjo"
-path="res://.godot/imported/curse.svg-a7f57776fa3a426f5f033be1e547d4dd.ctex"
+path="res://.godot/imported/curse.svg-4b2d1a656d376690d2fa78c5b152fdca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/CardSprites/Clean/curse.svg"
-dest_files=["res://.godot/imported/curse.svg-a7f57776fa3a426f5f033be1e547d4dd.ctex"]
+source_file="res://Clean/curse.svg"
+dest_files=["res://.godot/imported/curse.svg-4b2d1a656d376690d2fa78c5b152fdca.ctex"]
 
 [params]
 
