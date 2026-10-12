@@ -9,4 +9,3 @@ script = ExtResource("3_run")
 
 [node name="plr" parent="." unique_id=1300282196 instance=ExtResource("1_gl6un")]
 
-[node name="battle_scene" parent="." unique_id=1754938483 instance=ExtResource("2_j5yw3")]

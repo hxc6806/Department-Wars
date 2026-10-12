@@ -11,6 +11,10 @@ var energy_label: Label
 var player_turn: bool = true
 var run_ended: bool = false
 
+var hud_layer: CanvasLayer
+var deck_overlay: Control
+var deck_grid: GridContainer
+
 func can_afford(card_id: String) -> bool:
 	return player_turn and not run_ended and enemy_container.enemy_count > 0 and current_energy >= int(card_data.get_data(card_id)["energy_cost"])
 
@@ -38,6 +42,107 @@ func _create_energy_display() -> void:
 	energy_label.add_theme_color_override("font_color", Color("f1c66d"))
 	panel.add_child(energy_label)
 	_update_energy_display()
+	_setup_deck_overlay(layer)
+
+func _setup_deck_overlay(hud_layer: CanvasLayer) -> void:
+	deck_overlay = Control.new()
+	deck_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	deck_overlay.visible = false
+	hud_layer.add_child(deck_overlay)
+	
+	#Makes background dimmed
+	var bg := ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.85)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	deck_overlay.add_child(bg)
+	
+	#Panel for the centre
+	var center_panel := PanelContainer.new()
+	center_panel.custom_minimum_size = Vector2(800, 500)
+	center_panel.anchors_preset = Control.PRESET_CENTER
+	center_panel.position = (get_viewport_rect().size - Vector2(800, 500)) / 2.0
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color("151b2b")
+	panel_style.border_color = Color("f10000ff")
+	panel_style.set_border_width_all(2)
+	panel_style.set_corner_radius_all(16)
+	panel_style.content_margin_left = 20
+	panel_style.content_margin_right = 20
+	panel_style.content_margin_top = 20
+	panel_style.content_margin_bottom = 20
+	center_panel.add_theme_stylebox_override("panel", panel_style)
+	deck_overlay.add_child(center_panel)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 15)
+	center_panel.add_child(vbox)
+	
+	#Title
+	var title := Label.new()
+	title.text = "YOUR DECK"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 26)
+	title.add_theme_color_override("font_color", Color("f10000ff"))
+	vbox.add_child(title)
+	
+	#Allows scrolling
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+	deck_grid = GridContainer.new()
+	deck_grid.columns = 5
+	deck_grid.add_theme_constant_override("h_separation", 20)
+	deck_grid.add_theme_constant_override("v_separation", 20)
+	scroll.add_child(deck_grid)
+	
+	#Button to close
+	var close_btn := Button.new()
+	close_btn.text = "CLOSE"
+	close_btn.custom_minimum_size = Vector2(140, 40)
+	close_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	close_btn.pressed.connect(func(): deck_overlay.hide())
+	vbox.add_child(close_btn)
+	
+	var deck_node = get_node_or_null("../Deck")
+	if deck_node and deck_node.has_signal("deck_right_clicked"):
+		deck_node.deck_right_clicked.connect(show_deck_overlay)
+
+func show_deck_overlay() -> void:
+	if not deck_overlay:
+		return
+	
+	#Remove any previous cards
+	for child in deck_grid.get_children():
+		child.queue_free()
+	
+	#Fill the deck with the card textures
+	for card_name in deck.player_deck:
+		var count: int = deck.player_deck[card_name]
+		if count <= 0:
+			continue
+			
+		var data = card_data.get_data(card_name)
+		
+		for i in range(count):
+			var card_box := VBoxContainer.new()
+			card_box.alignment = BoxContainer.ALIGNMENT_CENTER
+			
+			var card_rect := TextureRect.new()
+			card_rect.texture = data["texture"]
+			card_rect.custom_minimum_size = Vector2(110, 150)
+			card_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			card_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			card_box.add_child(card_rect)
+			
+			var name_label := Label.new()
+			name_label.text = card_name
+			name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			name_label.add_theme_font_size_override("font_size", 16)
+			name_label.add_theme_color_override("font_color", Color("f10000ff"))
+			card_box.add_child(name_label)
+			
+			deck_grid.add_child(card_box)
+			
+	deck_overlay.show()
 
 func _update_energy_display() -> void:
 	energy_label.text = "ENERGY  %d / %d" % [current_energy, max_energy]

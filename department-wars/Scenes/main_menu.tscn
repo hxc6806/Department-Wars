@@ -17,7 +17,7 @@ func _ready():
 	options.visible = false
 	
 func _on_start_pressed() -> void:
-	get_tree().change_scene_to_file(\"res://Scenes/card_manager.tscn\")
+	get_tree().change_scene_to_file(\"res://Scenes/Game.tscn\")
 	
 func _on_settings_pressed() -> void:
 	print(\"Settings pressed\")
@@ -30,8 +30,6 @@ func _on_exit_pressed() -> void:
 func _on_back_options_pressed() -> void:
 	_ready()
 "
-
-[ext_resource type="Script" path="res://Scripts/main_menu.gd" id="3_menu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xaec"]
 texture = ExtResource("1_48xlc")
@@ -104,7 +102,6 @@ color = Color(0.32624456, 0.4742043, 0.6676635, 1)
 thickness = 6
 
 [node name="MainMenu" type="Control" unique_id=166822406]
-script = ExtResource("3_menu")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

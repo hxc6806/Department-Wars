@@ -8,6 +8,11 @@ func _ready() -> void:
 		button.texture_normal = data.texture
 		button.pressed.connect(func(): 
 			print(deck.player_deck)
+			for choice in get_children():
+				if choice is BaseButton: choice.disabled = true
+			if get_tree().current_scene.has_method("reward_chosen"):
+				get_tree().current_scene.reward_chosen()
+				return
 			queue_free()
 			# placeholder for now
 			make_battle_scene()
