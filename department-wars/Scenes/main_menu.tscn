@@ -2,8 +2,34 @@
 
 [ext_resource type="Texture2D" uid="uid://dvqke3cyyk7y3" path="res://Assets/360_F_1183353574_NIqTGmHSQIVK5ljuKxwIGrIHbcHNLh2m.jpg" id="1_48xlc"]
 [ext_resource type="FontFile" uid="uid://cthj24jjfrhwh" path="res://Assets/pixel_font.ttf" id="2_1ehe0"]
+[ext_resource type="AudioStream" uid="uid://ckul4t6rorqb3" path="res://Scenes/Melancholic Orchestral Worldbuilding Music The Seraphina (No Copyright).mp3" id="3_n45e2"]
+[ext_resource type="Script" uid="uid://clnrhvmc6jo66" path="res://Scenes/audio_control.gd" id="4_ce3w2"]
+[ext_resource type="Script" path="res://Scenes/fullscreen_control.gd" id="5_n45e2"]
 
-[ext_resource type="Script" path="res://Scripts/main_menu.gd" id="3_menu"]
+[sub_resource type="GDScript" id="GDScript_c7aq1"]
+script/source = "extends Control
+
+@onready var main_buttons: VBoxContainer = $MainButtons
+@onready var options: Panel = $Options
+
+func _ready():
+	main_buttons.visible = true
+	options.visible = false
+	
+func _on_start_pressed() -> void:
+	get_tree().change_scene_to_file(\"res://Scenes/card_manager.tscn\")
+	
+func _on_settings_pressed() -> void:
+	print(\"Settings pressed\")
+	main_buttons.visible = false
+	options.visible = true
+	
+func _on_exit_pressed() -> void:
+	get_tree().quit()
+	
+func _on_back_options_pressed() -> void:
+	_ready()
+"
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xaec"]
 texture = ExtResource("1_48xlc")
@@ -67,16 +93,24 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 shadow_offset = Vector2(0, 3.41)
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_5xaec"]
+color = Color(1, 1, 1, 1)
+thickness = 6
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_sc62p"]
+color = Color(0.32624456, 0.4742043, 0.6676635, 1)
+thickness = 6
+
 [node name="MainMenu" type="Control" unique_id=166822406]
-script = ExtResource("3_menu")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = SubResource("GDScript_c7aq1")
 
-[node name="Panel" type="Panel" parent="." unique_id=163267776]
+[node name="Background" type="Panel" parent="." unique_id=163267776]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -85,7 +119,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_5xaec")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1925138873]
+[node name="MainButtons" type="VBoxContainer" parent="." unique_id=1925138873]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -100,7 +134,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 7
 
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=1118896453]
+[node name="Button" type="Button" parent="MainButtons" unique_id=1118896453]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -114,7 +148,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_1ehe0")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_48xlc")
 text = "Start game"
 
-[node name="Button2" type="Button" parent="VBoxContainer" unique_id=1094322489]
+[node name="Button2" type="Button" parent="MainButtons" unique_id=1094322489]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -129,7 +163,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_48xlc")
 text = "Options
 "
 
-[node name="Button3" type="Button" parent="VBoxContainer" unique_id=210532435]
+[node name="Button3" type="Button" parent="MainButtons" unique_id=210532435]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -151,10 +185,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -171.0
-offset_top = -247.0
-offset_right = 160.0
-offset_bottom = -82.0
+offset_left = -305.0
+offset_top = -266.0
+offset_right = 295.0
+offset_bottom = -101.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0.011764706, 0.011764706, 0.011764706, 1)
@@ -164,3 +198,81 @@ theme_override_font_sizes/font_size = 40
 text = "Department Wars"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=410246597]
+stream = ExtResource("3_n45e2")
+autoplay = true
+bus = &"Music"
+
+[node name="Options" type="Panel" parent="." unique_id=1125336746]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -226.0
+offset_top = -119.0
+offset_right = 218.0
+offset_bottom = 208.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Options" unique_id=693782339]
+layout_mode = 0
+offset_right = 444.0
+offset_bottom = 59.0
+theme_override_font_sizes/font_size = 32
+text = "Options"
+horizontal_alignment = 1
+
+[node name="Back" type="Button" parent="Options" unique_id=835727190]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 261.0
+offset_right = 392.0
+offset_bottom = 316.0
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_5xaec")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_opfnp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cp0ys")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_48xlc")
+text = "Back
+"
+
+[node name="AudioControl" type="HSlider" parent="Options" unique_id=1074405886]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 62.0
+offset_right = 393.0
+offset_bottom = 106.0
+theme_override_styles/slider = SubResource("StyleBoxLine_5xaec")
+theme_override_styles/grabber_area = SubResource("StyleBoxLine_sc62p")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxLine_sc62p")
+max_value = 1.0
+step = 0.01
+value = 1.0
+script = ExtResource("4_ce3w2")
+audio_bus_name = "Music"
+
+[node name="FullscreenControl" type="CheckButton" parent="Options" unique_id=1574631638]
+layout_mode = 0
+offset_left = 47.0
+offset_top = 110.0
+offset_right = 398.0
+offset_bottom = 158.0
+text = "Fullscreen"
+script = ExtResource("5_n45e2")
+
+[connection signal="pressed" from="MainButtons/Button" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="MainButtons/Button2" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MainButtons/Button2" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="MainButtons/Button3" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="Options/Back" to="." method="_on_back_options_pressed"]
+[connection signal="value_changed" from="Options/AudioControl" to="Options/AudioControl" method="_on_value_changed"]
+[connection signal="toggled" from="Options/FullscreenControl" to="Options/FullscreenControl" method="_on_toggled"]
