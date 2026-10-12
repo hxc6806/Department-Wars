@@ -4,7 +4,9 @@ extends HBoxContainer
 var enemy_count = 0
 
 func _ready() -> void:
-	for i in range(0, 3):
+	var game = get_tree().current_scene
+	var count = game.encounter_enemy_count if game.has_method("battle_won") else 3
+	for i in range(0, count):
 		var enemy_scene = preload("res://Scenes/enemy.tscn")
 		var new_enemy = enemy_scene.instantiate()
 		var data = enemy_data.get_data(enemy_data.get_keys().pick_random())
@@ -20,7 +22,11 @@ func _ready() -> void:
 func on_death():
 	enemy_count -= 1
 	if enemy_count <= 0:
-		# if won, change to card select scene
+		# Map controller retains run health and owns the reward transition.
+		if get_tree().current_scene.has_method("battle_won"):
+			get_tree().current_scene.battle_won()
+			return
+		# Standalone legacy battle fallback
 		var new_card_select = load("res://Scenes/card_select.tscn").instantiate()
 		get_parent().queue_free()
 		get_tree().current_scene.add_child(new_card_select)

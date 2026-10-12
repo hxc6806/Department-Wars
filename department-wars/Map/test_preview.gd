@@ -1,0 +1,26 @@
+extends SceneTree
+func _initialize():
+ call_deferred("run")
+func run():
+ var scene=load("res://Map/route_map.tscn").instantiate()
+ root.add_child(scene)
+ await process_frame
+ assert(scene.buttons.size()==10)
+ scene._select("boss")
+ assert(scene.action.disabled)
+ scene._select("b")
+ assert(not scene.action.disabled)
+ scene._activate()
+ assert(scene.route.pending=="b")
+ scene._activate()
+ assert(scene.route.current=="b")
+ assert(scene.route.available()==["d","e"])
+ scene._select("e")
+ scene._activate()
+ scene._activate()
+ assert(scene.route.current=="e")
+ assert(scene.route.available()==["g"])
+ print("PASS: scene starts, locked boss blocked, elite route and rest route progress")
+ scene.queue_free()
+ await process_frame
+ quit()
