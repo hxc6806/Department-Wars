@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1yjc3rnbbjfk"
-path="res://.godot/imported/slash.svg-4129ebc288f4f6452c246f888f5716f3.ctex"
+path="res://.godot/imported/slash.svg-768d4735439d2c10284e8997badacb70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Clean/slash.svg"
-dest_files=["res://.godot/imported/slash.svg-4129ebc288f4f6452c246f888f5716f3.ctex"]
+source_file="res://Assets/CardSprites/Clean/slash.svg"
+dest_files=["res://.godot/imported/slash.svg-768d4735439d2c10284e8997badacb70.ctex"]
 
 [params]
 
