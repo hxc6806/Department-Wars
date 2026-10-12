@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7a8bqabexhrl"
-path="res://.godot/imported/Poeira PNG , Grânulo, Flutuador, Pequenos Elementos Imagem PNG e PSD Para Download Gratuito.jpg-c7cf087d16a4717428b7fd5c53ec6eec.ctex"
+uid="uid://ceo06lt0ky7yf"
+path="res://.godot/imported/images (1).png-30e4f0b8990b4318fa6852473bf74e68.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Poeira PNG , Grânulo, Flutuador, Pequenos Elementos Imagem PNG e PSD Para Download Gratuito.jpg"
-dest_files=["res://.godot/imported/Poeira PNG , Grânulo, Flutuador, Pequenos Elementos Imagem PNG e PSD Para Download Gratuito.jpg-c7cf087d16a4717428b7fd5c53ec6eec.ctex"]
+source_file="res://Assets/images (1).png"
+dest_files=["res://.godot/imported/images (1).png-30e4f0b8990b4318fa6852473bf74e68.ctex"]
 
 [params]
 

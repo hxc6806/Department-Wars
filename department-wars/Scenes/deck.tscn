@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://djty5s1wkxcdx"]
+
+[ext_resource type="Script" uid="uid://b2jrt8x7e8726" path="res://Scripts/deck.gd" id="1_io7pv"]
+[ext_resource type="Texture2D" uid="uid://b1fceyaqdmwqm" path="res://Assets/WZ Deck.png" id="2_nlncs"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_38brq"]
+size = Vector2(246.08943, 320.3244)
+
+[node name="Deck" type="Node2D" unique_id=1058168315]
+script = ExtResource("1_io7pv")
+
+[node name="DeckSprite" type="Sprite2D" parent="." unique_id=2146386053]
+z_index = -2
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_nlncs")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=768193570]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1522595589]
+position = Vector2(-5.7592163, 0.736084)
+rotation = 0.7884821
+scale = Vector2(0.8, 0.8)
+shape = SubResource("RectangleShape2D_38brq")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=384947881]
+modulate = Color(0, 0, 0, 1)
+z_index = -2
+offset_left = 62.0
+offset_top = 30.0
+offset_right = 102.0
+offset_bottom = 70.0
+scale = Vector2(4.2, 4.653)
+theme_override_font_sizes/normal_font_size = 24
+text = "0"
