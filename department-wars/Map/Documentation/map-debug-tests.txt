@@ -1,0 +1,30 @@
+Godot Engine v4.5.1.stable.official.f62fdbde1 - https://godotengine.org
+
+PASS: Editor tools start hidden
+PASS: F9 opens the tools
+PASS: Held key does not repeatedly toggle
+PASS: F9 closes the tools
+PASS: Restore health uses the maximum-health cap
+PASS: District shortcut cannot interrupt a battle
+PASS: Win shortcut refuses enemy turns
+PASS: Win shortcut resumes inspected battle and opens normal rewards
+{ "Fireball": 1, "Slash": 4 }
+PASS: Debug victory advances only after a reward is chosen
+{ "Fireball": 2, "Slash": 4 }
+PASS: Executive Hall opens district transition
+PASS: District transition opens Ironworks map
+PASS: Transfer preserves health and existing deck exactly
+PASS: Ironworks begins on connected starting paths
+PASS: Ironworks background is connected
+PASS: Reserved boss cannot be entered
+PASS: Ironworks uses existing two-enemy battles
+PASS: Existing enemy implementation retained
+PASS: Existing enemy implementation retained
+{ "Fireball": 3, "Slash": 4 }
+PASS: Salvage opens existing card rewards
+{ "Fireball": 3, "Slash": 4, "Curse": 1 }
+{ "Fireball": 4, "Slash": 4, "Curse": 1 }
+{ "Fireball": 4, "Slash": 5, "Curse": 1 }
+PASS: Final route encounter reaches completion dialog
+PASS: Preview cannot reset a completed run
+Failures: 0

@@ -1,8 +1,10 @@
 extends TextureButton
 
 var card_id
+var idle_alpha: float = 1.0
 
 func _ready() -> void:
+	self_modulate.a = idle_alpha
 	mouse_entered.connect(highlight)
 	mouse_exited.connect(unhighlight)
 	pressed.connect(on_press)
@@ -19,4 +21,4 @@ func highlight():
 
 func unhighlight():
 	var tween = create_tween()
-	tween.tween_property(self, "self_modulate:a", .5, .1)
+	tween.tween_property(self, "self_modulate:a", idle_alpha, .1)

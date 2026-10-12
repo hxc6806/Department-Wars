@@ -1,5 +1,6 @@
 extends Node
 ## Owns map progress for this run; player and deck survive scene transitions.
+const Ironworks = preload("res://Map/ironworks_district.gd")
 const Route = preload("res://Map/route_state.gd")
 var route = Route.new()
 var map_view
@@ -10,6 +11,9 @@ var reward: Node
 var encounter_enemy_count := 2
 var rewards_remaining := 0
 var state := "map"
+var district := 0
+var backdrop: CanvasLayer
+var route_dialog: CanvasLayer
 
 func _enter_tree() -> void:
  deck.player_deck = {"Fireball": 1, "Slash": 3}
@@ -18,11 +22,7 @@ func _ready() -> void:
  map_layer=CanvasLayer.new()
  map_layer.layer=20
  add_child(map_layer)
- map_view=Control.new()
- map_view.set_script(preload("res://Map/game_map.gd"))
- map_view.route=route
- map_layer.add_child(map_view)
- map_view.encounter_requested.connect(_enter_encounter)
+ _build_map()
  var hud=CanvasLayer.new()
  hud.layer=21
  add_child(hud)
@@ -39,6 +39,9 @@ func _ready() -> void:
  get_viewport().size_changed.connect(_layout)
  _layout()
  _show_map()
+ if OS.has_feature("editor"):
+  var tools = preload("res://Map/debug_tools.gd").new()
+  add_child(tools)
 
 func _layout():
  var viewport_size=get_viewport().get_visible_rect().size
@@ -65,7 +68,7 @@ func _show_map():
  _layout()
 
 func _toggle_map():
- if state=="map" or state=="transition": return
+ if state not in ["battle", "reward"]: return
  # Inspection only during an encounter. Finish enemy animations first.
  if is_instance_valid(battle):
   var manager=battle.get_node_or_null("CardManager")
@@ -85,7 +88,7 @@ func _enter_encounter(_id: String, kind: String):
  if kind=="rest":
   $plr/Health.heal(25)
   route.finish()
-  _show_map()
+  _finish_route_or_show_map()
   return
  map_layer.hide()
  $plr/plr_interface.show()
@@ -137,4 +140,105 @@ func _after_reward():
  else:
   route.finish()
   state="map"
-  _show_map()
+  _finish_route_or_show_map()
+
+
+func _build_map() -> void:
+ if is_instance_valid(map_view):
+  map_layer.remove_child(map_view)
+  map_view.queue_free()
+ map_view = Control.new()
+ map_view.set_script(preload("res://Map/game_map.gd"))
+ map_view.route = route
+ map_view.district_index = district
+ if district == 1:
+  map_view.DATA = Ironworks.NODES.duplicate(true)
+  map_view.district_title = "02 / IRONWORKS DISTRICT"
+  map_view.background_path = "res://Map/Art/ironworks.png"
+ map_layer.add_child(map_view)
+ map_view.encounter_requested.connect(_enter_encounter)
+
+func _finish_route_or_show_map() -> void:
+ _show_map()
+ if route.current != "h": return
+ state = "district_clear" if district == 0 else "complete"
+ map_view.read_only = true
+ map_view.refresh()
+ map_button.hide()
+ if district == 0:
+  _open_route_dialog("CITY ROUTE COMPLETE", "The Ironworks route is open.\nCarry your current health and deck into the next district.", "ENTER IRONWORKS", start_ironworks)
+ else:
+  _open_route_dialog("IRONWORKS ROUTE COMPLETE", "You reached the Furnace Gate.\nBoth available map routes are complete.", "NEW RUN", func(): get_tree().reload_current_scene())
+
+func start_ironworks() -> void:
+ # Only switch districts between encounters. Existing health/deck are retained.
+ if district != 0 or state not in ["map", "district_clear"]: return
+ if is_instance_valid(route_dialog):
+  route_dialog.queue_free()
+  route_dialog = null
+ district = 1
+ route = Route.new()
+ route.configure(Ironworks.GRAPH)
+ state = "map"
+ _build_map()
+ _add_ironworks_background()
+ _show_map()
+
+func _add_ironworks_background() -> void:
+ if is_instance_valid(backdrop): return
+ backdrop = CanvasLayer.new()
+ backdrop.layer = -5
+ add_child(backdrop)
+ var background := TextureRect.new()
+ background.texture = preload("res://Map/Art/ironworks.png")
+ background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+ background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+ background.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ backdrop.add_child(background)
+ var shade := ColorRect.new()
+ shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ shade.color = Color(0.025, 0.04, 0.07, 0.33)
+ shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ backdrop.add_child(shade)
+
+func _open_route_dialog(title: String, message: String, action_text: String, action: Callable) -> void:
+ route_dialog = CanvasLayer.new()
+ route_dialog.layer = 30
+ add_child(route_dialog)
+ var shade := ColorRect.new()
+ shade.color = Color(0.015, 0.025, 0.045, 0.92)
+ shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ route_dialog.add_child(shade)
+ var center := CenterContainer.new()
+ center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ route_dialog.add_child(center)
+ var panel := PanelContainer.new()
+ panel.custom_minimum_size = Vector2(740, 380)
+ var box_style = map_view.style(Color("142234"), Color("ffd478"), 14)
+ box_style.set_content_margin_all(32)
+ panel.add_theme_stylebox_override("panel", box_style)
+ center.add_child(panel)
+ var box := VBoxContainer.new()
+ box.add_theme_constant_override("separation", 24)
+ panel.add_child(box)
+ var heading := Label.new()
+ heading.text = title
+ heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ heading.add_theme_font_size_override("font_size", 32)
+ heading.add_theme_color_override("font_color", Color("ffd478"))
+ box.add_child(heading)
+ var body := Label.new()
+ body.text = message
+ body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ body.add_theme_font_size_override("font_size", 23)
+ box.add_child(body)
+ for item in [[action_text, action], ["RETURN TO MENU", func(): get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")]]:
+  var button := Button.new()
+  button.text = item[0]
+  button.custom_minimum_size.y = 56
+  button.add_theme_font_size_override("font_size", 23)
+  button.add_theme_stylebox_override("normal", map_view.style(Color("20364a"), Color("ffd478"), 8))
+  button.add_theme_stylebox_override("hover", map_view.style(Color("344c63"), Color("ffe4a3"), 8))
+  button.pressed.connect(item[1])
+  box.add_child(button)

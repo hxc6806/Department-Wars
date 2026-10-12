@@ -1,0 +1,24 @@
+Godot Engine v4.5.1.stable.official.f62fdbde1 - https://godotengine.org
+
+PASS: Run begins on map
+PASS: Node launches real battle
+PASS: Standard encounter has two enemies
+PASS: Battle map is inspection only
+PASS: Cannot skip battle through map
+PASS: Existing fireball damage works without one-shotting
+PASS: No-energy cards remain unaffordable
+PASS: Enemy turn deals 8 damage and refills energy
+PASS: Victory launches reward
+{ "Fireball": 1, "Slash": 3, "Curse": 1 }
+PASS: Reward adds exactly one card
+PASS: Reward returns to correct map position
+PASS: Health carries between encounters
+PASS: Treasure opens card reward
+{ "Fireball": 1, "Slash": 4, "Curse": 1 }
+PASS: Treasure completes without resetting health
+PASS: New run resets health and deck
+{ "Fireball": 1, "Slash": 3, "Curse": 1 }
+PASS: Elite grants second card choice
+{ "Fireball": 1, "Slash": 3, "Curse": 2 }
+PASS: Rest heals 25 and advances once
+Failures: 0

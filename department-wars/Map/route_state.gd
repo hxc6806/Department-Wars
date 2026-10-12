@@ -8,9 +8,16 @@ const GRAPH = {
 var current := "start"
 var completed: Array[String] = []
 var pending := ""
+var graph: Dictionary = GRAPH.duplicate(true)
+
+func configure(connections: Dictionary) -> void:
+ graph = connections.duplicate(true)
+ current = "start"
+ completed.clear()
+ pending = ""
 
 func available() -> Array:
- return GRAPH[current].duplicate() if pending.is_empty() else []
+ return graph[current].duplicate() if pending.is_empty() else []
 
 func enter(id: String) -> bool:
  if not available().has(id):
