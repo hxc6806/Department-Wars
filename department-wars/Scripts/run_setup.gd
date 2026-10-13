@@ -1,6 +1,6 @@
 extends Node
 ## Owns map progress for this run; player and deck survive scene transitions.
-const Ironworks = preload("res://Map/ironworks_district.gd")
+const Floors = preload("res://Map/floors.gd")
 const Route = preload("res://Map/route_state.gd")
 var route = Route.new()
 var map_view
@@ -11,14 +11,22 @@ var reward: Node
 var encounter_enemy_count := 2
 var rewards_remaining := 0
 var state := "map"
-var district := 0
+var floor_index := 0
+## One node layout per floor. Rolled on _ready unless set beforehand (tests set fixed layouts).
+var layouts: Array = []
 var backdrop: CanvasLayer
+var backdrop_image: TextureRect
 var route_dialog: CanvasLayer
 
 func _enter_tree() -> void:
  deck.player_deck = {"Fireball": 1, "Slash": 3}
 
 func _ready() -> void:
+ if layouts.is_empty():
+  var rng=RandomNumberGenerator.new()
+  rng.randomize()
+  for i in Floors.FLOORS.size(): layouts.append(Floors.generate(rng))
+ _add_floor_background()
  map_layer=CanvasLayer.new()
  map_layer.layer=20
  add_child(map_layer)
@@ -150,52 +158,58 @@ func _build_map() -> void:
  map_view = Control.new()
  map_view.set_script(preload("res://Map/game_map.gd"))
  map_view.route = route
- map_view.district_index = district
- if district == 1:
-  map_view.DATA = Ironworks.NODES.duplicate(true)
-  map_view.district_title = "02 / IRONWORKS DISTRICT"
-  map_view.background_path = "res://Map/Art/ironworks.png"
+ var floor_data: Dictionary = Floors.FLOORS[floor_index]
+ map_view.DATA = layouts[floor_index].duplicate(true)
+ map_view.district_title = "%02d / %s" % [floor_index + 1, floor_data.name]
+ map_view.background_path = floor_data.background
  map_layer.add_child(map_view)
  map_view.encounter_requested.connect(_enter_encounter)
+
+func is_last_floor() -> bool:
+ return floor_index >= Floors.FLOORS.size() - 1
 
 func _finish_route_or_show_map() -> void:
  _show_map()
  if route.current != "h": return
- state = "district_clear" if district == 0 else "complete"
+ state = "complete" if is_last_floor() else "floor_clear"
  map_view.read_only = true
  map_view.refresh()
  map_button.hide()
- if district == 0:
-  _open_route_dialog("CITY ROUTE COMPLETE", "The Ironworks route is open.\nCarry your current health and deck into the next district.", "ENTER IRONWORKS", start_ironworks)
+ var cleared: String = Floors.FLOORS[floor_index].name
+ if is_last_floor():
+  _open_route_dialog(cleared + " COMPLETE", "You cleared every department.", "NEW RUN", func(): get_tree().reload_current_scene())
  else:
-  _open_route_dialog("IRONWORKS ROUTE COMPLETE", "You reached the Furnace Gate.\nBoth available map routes are complete.", "NEW RUN", func(): get_tree().reload_current_scene())
+  var next: String = Floors.FLOORS[floor_index + 1].name
+  _open_route_dialog(cleared + " COMPLETE", "The %s is open.\nCarry your current health and deck onto the next floor." % next.capitalize(), "ENTER " + next, start_next_floor)
 
-func start_ironworks() -> void:
- # Only switch districts between encounters. Existing health/deck are retained.
- if district != 0 or state not in ["map", "district_clear"]: return
+func start_next_floor() -> void:
+ # Only switch floors between encounters. Existing health/deck are retained.
+ if is_last_floor() or state not in ["map", "floor_clear"]: return
  if is_instance_valid(route_dialog):
   route_dialog.queue_free()
   route_dialog = null
- district = 1
+ floor_index += 1
  route = Route.new()
- route.configure(Ironworks.GRAPH)
+ route.configure(Floors.GRAPH)
  state = "map"
  _build_map()
- _add_ironworks_background()
+ _add_floor_background()
  _show_map()
 
-func _add_ironworks_background() -> void:
- if is_instance_valid(backdrop): return
- backdrop = CanvasLayer.new()
- backdrop.layer = -5
- add_child(backdrop)
- var background := TextureRect.new()
- background.texture = preload("res://Map/Art/ironworks.png")
- background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
- background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
- background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
- background.mouse_filter = Control.MOUSE_FILTER_IGNORE
- backdrop.add_child(background)
+## Full-screen floor image shown behind battles and rewards.
+func _add_floor_background() -> void:
+ if not is_instance_valid(backdrop):
+  backdrop = CanvasLayer.new()
+  backdrop.layer = -5
+  add_child(backdrop)
+  backdrop_image = TextureRect.new()
+  backdrop_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+  backdrop_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+  backdrop_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+  backdrop_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+  backdrop.add_child(backdrop_image)
+ backdrop_image.texture = Floors.texture(Floors.FLOORS[floor_index].background)
+ if backdrop.get_child_count() > 1: return
  var shade := ColorRect.new()
  shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  shade.color = Color(0.025, 0.04, 0.07, 0.33)

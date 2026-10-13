@@ -31,7 +31,7 @@ func _ready() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color("ffd478"))
 	box.add_child(title)
-	travel_button = _button(box, "PREVIEW IRONWORKS", preview_ironworks)
+	travel_button = _button(box, "SKIP TO NEXT FLOOR", skip_to_next_floor)
 	heal_button = _button(box, "RESTORE HEALTH", restore_health)
 	win_button = _button(box, "WIN CURRENT BATTLE", win_current_battle)
 	panel.hide()
@@ -53,13 +53,13 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	if not is_instance_valid(panel) or not panel.visible: return
-	travel_button.disabled = game.district != 0 or game.state != "map"
+	travel_button.disabled = game.is_last_floor() or game.state != "map"
 	heal_button.disabled = game.state not in ["map", "battle"] or (game.state == "battle" and not _can_win())
 	win_button.disabled = not _can_win()
 
-func preview_ironworks() -> void:
-	if game.district != 0 or game.state != "map": return
-	game.start_ironworks()
+func skip_to_next_floor() -> void:
+	if game.is_last_floor() or game.state != "map": return
+	game.start_next_floor()
 	panel.hide()
 
 func restore_health() -> void:

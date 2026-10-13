@@ -1,13 +1,19 @@
 extends SceneTree
+const Floors = preload("res://Map/floors.gd")
 var errors := 0
 func check(ok: bool, message: String):
  print(("PASS: " if ok else "FAIL: ")+message)
  if not ok: errors+=1
 func _initialize(): call_deferred("run")
+# Fixed node types so the test does not depend on the random floor layout.
+func fixed_layouts() -> Array:
+ var kinds=["battle","elite","treasure","battle","rest","battle","elite","battle"]
+ return [Floors.build(kinds),Floors.build(kinds),Floors.build(kinds)]
 func frames(count:=4):
  for i in range(count): await process_frame
 func run():
  var game=load("res://Scenes/Game.tscn").instantiate()
+ game.layouts=fixed_layouts()
  root.add_child(game)
  current_scene=game
  await frames()
@@ -59,6 +65,7 @@ func run():
  game.queue_free()
  await frames()
  var fresh=load("res://Scenes/Game.tscn").instantiate()
+ fresh.layouts=fixed_layouts()
  root.add_child(fresh)
  current_scene=fresh
  await frames()

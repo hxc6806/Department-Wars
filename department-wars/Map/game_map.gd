@@ -1,9 +1,8 @@
 extends "res://Map/route_map.gd"
 var read_only := false
-var district_index := 0
 func _ready():
  super._ready()
- detail.text="Select a gold node.\n\nChoose your route towards\nthe Director’s Office.\n\nGold = available\nTeal = completed\nRing = current position"
+ detail.text="Select a gold node.\n\nChoose your route towards\nthe Exam.\n\nGold = available\nTeal = completed\nRing = current position"
  for child in get_children():
   if child is Button and child.text == "RESTART PREVIEW": child.hide()
   if child is Label and child.text == "ROUTE DESIGN PREVIEW": child.hide()
@@ -11,9 +10,7 @@ func _ready():
 func _select(id: String):
  selected=id
  heading.text=DATA[id][1].replace(" ","\n")
- var kind: String=DATA[id][2]
- detail.text={"start":"Your run begins here.","battle":"Battle two enemies.\nWin and choose a card.","elite":"Battle three enemies.\nWin and choose two cards.","treasure":"Choose one card to add\nto your deck.","rest":"Recover 25 health, up to\nyour maximum health.","boss":"Boss encounter coming soon."}[kind]
- if district_index == 1: detail.text = DATA[id][3]
+ detail.text=DATA[id][3]
  if read_only: detail.text+="\n\nFinish this encounter\nto continue."
  refresh()
 func refresh():
