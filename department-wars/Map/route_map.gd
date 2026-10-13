@@ -5,7 +5,7 @@ const Route = preload("res://Map/route_state.gd")
 const GOLD = Color("ffd478")
 const INK = Color("111c2c")
 const MUTED = Color("8596ad")
-const DATA = {
+var DATA = {
  "start": [Vector2(490,520), "RECEPTION", "start", "Your journey begins here."],
  "a": [Vector2(330,455), "OFFICE FLOOR", "battle", "Standard battle\nProposed reward: choose one card."],
  "b": [Vector2(660,455), "SECURITY DIVISION", "elite", "Harder battle\nProposed reward: stronger card choices."],
@@ -17,6 +17,8 @@ const DATA = {
  "h": [Vector2(490,150), "EXECUTIVE HALL", "battle", "Last encounter before the department boss."],
  "boss": [Vector2(490,52), "DIRECTOR’S OFFICE", "boss", "Boss encounter coming soon."]
 }
+var district_title := "01 / CITY DISTRICT"
+var background_path := "res://Map/Art/city.jpg"
 var route = Route.new()
 var selected := ""
 var buttons := {}
@@ -33,7 +35,7 @@ func _ready():
  pixel_font = load("res://Map/Art/pixel_font.ttf")
  small_font = ThemeDB.fallback_font
  var bg = TextureRect.new()
- bg.texture = load("res://Map/Art/city.jpg")
+ bg.texture = load(background_path)
  bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
  bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
  bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -50,7 +52,7 @@ func _ready():
  add_child(lines)
  lines.draw.connect(_draw_connections.bind(lines))
  label_at("DEPARTMENT WARS", Vector2(30,18), 17, GOLD, true)
- label_at("01 / CITY DISTRICT", Vector2(770,19), 16, Color.WHITE)
+ label_at(district_title, Vector2(770,19), 16, Color.WHITE)
  label_at("ROUTE DESIGN PREVIEW", Vector2(945,22), 11, MUTED)
  for id in DATA:
   var button = Button.new()
@@ -169,8 +171,8 @@ func _activate():
  refresh()
 
 func _draw_connections(canvas: Node2D):
- for source in Route.GRAPH:
-  for target in Route.GRAPH[source]:
+ for source in route.graph:
+  for target in route.graph[source]:
    var a: Vector2=DATA[source][0]+map_origin
    var b: Vector2=DATA[target][0]+map_origin
    var colour=Color("64748b")

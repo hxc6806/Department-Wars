@@ -4,7 +4,7 @@
 [ext_resource type="FontFile" uid="uid://cthj24jjfrhwh" path="res://Assets/pixel_font.ttf" id="2_1ehe0"]
 [ext_resource type="AudioStream" uid="uid://ckul4t6rorqb3" path="res://Scenes/Melancholic Orchestral Worldbuilding Music The Seraphina (No Copyright).mp3" id="3_n45e2"]
 [ext_resource type="Script" uid="uid://clnrhvmc6jo66" path="res://Scenes/audio_control.gd" id="4_ce3w2"]
-[ext_resource type="Script" path="res://Scenes/fullscreen_control.gd" id="5_n45e2"]
+[ext_resource type="Script" uid="uid://bt3dspi1bujq5" path="res://Scenes/fullscreen_control.gd" id="5_n45e2"]
 
 [sub_resource type="GDScript" id="GDScript_c7aq1"]
 script/source = "extends Control
@@ -270,8 +270,8 @@ text = "Fullscreen"
 script = ExtResource("5_n45e2")
 
 [connection signal="pressed" from="MainButtons/Button" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="MainButtons/Button2" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="MainButtons/Button2" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="MainButtons/Button2" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="MainButtons/Button3" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="Options/Back" to="." method="_on_back_options_pressed"]
 [connection signal="value_changed" from="Options/AudioControl" to="Options/AudioControl" method="_on_value_changed"]
