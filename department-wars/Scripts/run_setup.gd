@@ -1,6 +1,7 @@
 extends Node
 ## Owns map progress for this run; player and deck survive scene transitions.
 const Ironworks = preload("res://Map/ironworks_district.gd")
+const Skyline = preload("res://Map/skyline_district.gd")
 const Route = preload("res://Map/route_state.gd")
 var route = Route.new()
 var map_view
@@ -155,20 +156,26 @@ func _build_map() -> void:
   map_view.DATA = Ironworks.NODES.duplicate(true)
   map_view.district_title = "02 / IRONWORKS DISTRICT"
   map_view.background_path = "res://Map/Art/ironworks.png"
+ elif district == 2:
+  map_view.DATA = Skyline.NODES.duplicate(true)
+  map_view.district_title = "03 / SKYLINE DISTRICT"
+  map_view.background_path = "res://Map/Art/skyline.png"
  map_layer.add_child(map_view)
  map_view.encounter_requested.connect(_enter_encounter)
 
 func _finish_route_or_show_map() -> void:
  _show_map()
  if route.current != "h": return
- state = "district_clear" if district == 0 else "complete"
+ state = "district_clear" if district < 2 else "complete"
  map_view.read_only = true
  map_view.refresh()
  map_button.hide()
  if district == 0:
   _open_route_dialog("CITY ROUTE COMPLETE", "The Ironworks route is open.\nCarry your current health and deck into the next district.", "ENTER IRONWORKS", start_ironworks)
+ elif district == 1:
+  _open_route_dialog("IRONWORKS ROUTE COMPLETE", "The Skyline route is open.\nCarry your current health and deck into the next district.", "ENTER SKYLINE", start_skyline)
  else:
-  _open_route_dialog("IRONWORKS ROUTE COMPLETE", "You reached the Furnace Gate.\nBoth available map routes are complete.", "NEW RUN", func(): get_tree().reload_current_scene())
+  _open_route_dialog("SKYLINE ROUTE COMPLETE", "You reached the Observatory.\nAll three available routes are complete.", "NEW RUN", func(): get_tree().reload_current_scene())
 
 func start_ironworks() -> void:
  # Only switch districts between encounters. Existing health/deck are retained.
@@ -181,16 +188,32 @@ func start_ironworks() -> void:
  route.configure(Ironworks.GRAPH)
  state = "map"
  _build_map()
- _add_ironworks_background()
+ _set_district_background("res://Map/Art/ironworks.png")
  _show_map()
 
-func _add_ironworks_background() -> void:
- if is_instance_valid(backdrop): return
+func start_skyline() -> void:
+ # Debug may skip ahead from City; normal progression enters from Ironworks.
+ if district not in [0, 1] or state not in ["map", "district_clear"]: return
+ if is_instance_valid(route_dialog):
+  route_dialog.queue_free()
+  route_dialog = null
+ district = 2
+ route = Route.new()
+ route.configure(Skyline.GRAPH)
+ state = "map"
+ _build_map()
+ _set_district_background("res://Map/Art/skyline.png")
+ _show_map()
+
+func _set_district_background(path: String) -> void:
+ if is_instance_valid(backdrop):
+  remove_child(backdrop)
+  backdrop.queue_free()
  backdrop = CanvasLayer.new()
  backdrop.layer = -5
  add_child(backdrop)
  var background := TextureRect.new()
- background.texture = preload("res://Map/Art/ironworks.png")
+ background.texture = load(path)
  background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
  background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED

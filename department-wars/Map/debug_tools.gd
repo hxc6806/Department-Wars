@@ -3,6 +3,7 @@ extends CanvasLayer
 var game: Node
 var panel: PanelContainer
 var travel_button: Button
+var skyline_button: Button
 var heal_button: Button
 var win_button: Button
 
@@ -14,7 +15,7 @@ func _ready() -> void:
 	layer = 40
 	panel = PanelContainer.new()
 	panel.position = Vector2(28, 300)
-	panel.custom_minimum_size = Vector2(390, 220)
+	panel.custom_minimum_size = Vector2(390, 290)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("111c2cf5")
 	style.border_color = Color("ffd478")
@@ -32,6 +33,7 @@ func _ready() -> void:
 	title.add_theme_color_override("font_color", Color("ffd478"))
 	box.add_child(title)
 	travel_button = _button(box, "PREVIEW IRONWORKS", preview_ironworks)
+	skyline_button = _button(box, "PREVIEW SKYLINE", preview_skyline)
 	heal_button = _button(box, "RESTORE HEALTH", restore_health)
 	win_button = _button(box, "WIN CURRENT BATTLE", win_current_battle)
 	panel.hide()
@@ -54,12 +56,18 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _process(_delta: float) -> void:
 	if not is_instance_valid(panel) or not panel.visible: return
 	travel_button.disabled = game.district != 0 or game.state != "map"
+	skyline_button.disabled = game.district not in [0, 1] or game.state != "map"
 	heal_button.disabled = game.state not in ["map", "battle"] or (game.state == "battle" and not _can_win())
 	win_button.disabled = not _can_win()
 
 func preview_ironworks() -> void:
 	if game.district != 0 or game.state != "map": return
 	game.start_ironworks()
+	panel.hide()
+
+func preview_skyline() -> void:
+	if game.district not in [0, 1] or game.state != "map": return
+	game.start_skyline()
 	panel.hide()
 
 func restore_health() -> void:

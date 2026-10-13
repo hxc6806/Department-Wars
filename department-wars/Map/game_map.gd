@@ -13,7 +13,7 @@ func _select(id: String):
  heading.text=DATA[id][1].replace(" ","\n")
  var kind: String=DATA[id][2]
  detail.text={"start":"Your run begins here.","battle":"Battle two enemies.\nWin and choose a card.","elite":"Battle three enemies.\nWin and choose two cards.","treasure":"Choose one card to add\nto your deck.","rest":"Recover 25 health, up to\nyour maximum health.","boss":"Boss encounter coming soon."}[kind]
- if district_index == 1: detail.text = DATA[id][3]
+ if district_index > 0: detail.text = DATA[id][3]
  if read_only: detail.text+="\n\nFinish this encounter\nto continue."
  refresh()
 func refresh():
