@@ -8,12 +8,10 @@ var card_id
 var cost_label: Label
 var unavailable_label: Label
 var cost_style: StyleBoxFlat
-var effect_panel: PanelContainer
 
 func _ready() -> void:
 	get_parent().connect_card_signals(self)
 	_create_cost_indicator()
-	_create_effect_tooltip()
 	get_parent().energy_changed.connect(_update_affordability)
 	_update_affordability(get_parent().current_energy)
 
@@ -60,33 +58,7 @@ func _update_affordability(available: int) -> void:
 	unavailable_label.visible = not affordable
 
 func _on_area_2d_mouse_entered():
-	if effect_panel: effect_panel.show()
 	emit_signal("hovered", self)
 
 func _on_area_2d_mouse_exited():
-	if effect_panel: effect_panel.hide()
 	emit_signal("hovered_off", self)
-
-func _create_effect_tooltip() -> void:
-	var data = card_data.get_data(card_id)
-	if not data.has("description"): return
-	effect_panel = PanelContainer.new()
-	effect_panel.position = Vector2(-210, -300)
-	effect_panel.custom_minimum_size = Vector2(420, 140)
-	effect_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("101d2cf5")
-	style.border_color = Color("ffd478")
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(8)
-	style.set_content_margin_all(14)
-	effect_panel.add_theme_stylebox_override("panel", style)
-	var label := Label.new()
-	label.text = data.description
-	label.custom_minimum_size.x = 380
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_font_size_override("font_size", 24)
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	effect_panel.add_child(label)
-	add_child(effect_panel)
-	effect_panel.hide()
