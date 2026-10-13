@@ -5,19 +5,22 @@ const GRAPH = {
  "c": ["f"], "d": ["f", "g"], "e": ["g"],
  "f": ["h"], "g": ["h"], "h": ["boss"], "boss": []
 }
-var current := "start"
+## Empty until the first node ("start") is completed; the run begins before any node.
+var current := ""
 var completed: Array[String] = []
 var pending := ""
 var graph: Dictionary = GRAPH.duplicate(true)
 
 func configure(connections: Dictionary) -> void:
  graph = connections.duplicate(true)
- current = "start"
+ current = ""
  completed.clear()
  pending = ""
 
 func available() -> Array:
- return graph[current].duplicate() if pending.is_empty() else []
+ if not pending.is_empty(): return []
+ if current.is_empty(): return ["start"]
+ return graph[current].duplicate()
 
 func enter(id: String) -> bool:
  if not available().has(id):

@@ -2,7 +2,7 @@ extends "res://Map/route_map.gd"
 var read_only := false
 func _ready():
  super._ready()
- detail.text="Select a gold node.\n\nChoose your route towards\nthe Exam.\n\nGold = available\nTeal = completed\nRing = current position"
+ detail.text="Select a bright node.\n\nChoose your route towards\nthe Exam.\n\nWhite line = available path\nTeal line = completed path"
  for child in get_children():
   if child is Button and child.text == "RESTART PREVIEW": child.hide()
   if child is Label and child.text == "ROUTE DESIGN PREVIEW": child.hide()

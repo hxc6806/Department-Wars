@@ -20,6 +20,10 @@ func run():
  var hp=game.get_node("plr/Health")
  hp.dmg(10)
  check(game.state=="map" and game.battle==null,"Run begins on map")
+ check(game.route.available()==["start"] and game.map_view.DATA.start[2]=="battle","Floor starts with a guaranteed assignment")
+ # Skip the first assignment so the rest of the test runs from the old start position.
+ game.route.enter("start")
+ game.route.finish()
  game.map_view._select("a")
  game.map_view._activate()
  await frames()
@@ -70,6 +74,8 @@ func run():
  current_scene=fresh
  await frames()
  check(fresh.get_node("plr/Health").current_health==100 and deck.player_deck=={"Fireball":1,"Slash":3},"New run resets health and deck")
+ fresh.route.enter("start")
+ fresh.route.finish()
  fresh.map_view._select("b")
  fresh.map_view._activate()
  await frames()

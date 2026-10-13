@@ -10,7 +10,7 @@ const POSITIONS = {
  "start": Vector2(490,520), "a": Vector2(330,455), "b": Vector2(660,455),
  "c": Vector2(220,350), "d": Vector2(490,350), "e": Vector2(760,350),
  "f": Vector2(335,245), "g": Vector2(650,245), "h": Vector2(490,150),
- "boss": Vector2(490,52)
+ "boss": Vector2(490,25)
 }
 const FLOORS = [
  {"name": "BUSINESS DEPARTMENT", "background": "res://Assets/Maps/business_department.png"},
@@ -19,7 +19,6 @@ const FLOORS = [
 ]
 # Keys are the internal node types used by run_setup.gd; "name" is what the map shows.
 const TYPES = {
- "start": {"name": "START", "symbol": "•", "image": "res://Assets/MapNodes/start.png", "text": "Your run begins here."},
  "battle": {"name": "ASSIGNMENTS", "symbol": "⚔", "image": "res://Assets/MapNodes/assignments.png", "text": "Battle two enemies.\nWin and choose a card."},
  "elite": {"name": "QUIZZES", "symbol": "!", "image": "res://Assets/MapNodes/quizzes.png", "text": "Battle three enemies.\nWin and choose two cards."},
  "treasure": {"name": "RESTAURANT", "symbol": "▣", "image": "res://Assets/MapNodes/restaurant.png", "text": "Choose one card to add\nto your deck."},
@@ -45,7 +44,8 @@ static func generate(rng: RandomNumberGenerator) -> Dictionary:
 
 ## Layout from a fixed list of 8 types for nodes a-h (used by tests).
 static func build(kinds: Array) -> Dictionary:
- var data := {"start": _node("start", "start")}
+ # The first node of every floor is always an assignment.
+ var data := {"start": _node("start", "battle")}
  for i in MIDDLE.size():
   data[MIDDLE[i]] = _node(MIDDLE[i], kinds[i])
  data["boss"] = _node("boss", "boss")

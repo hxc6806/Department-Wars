@@ -2,6 +2,7 @@ extends Node
 ## Owns map progress for this run; player and deck survive scene transitions.
 const Floors = preload("res://Map/floors.gd")
 const Route = preload("res://Map/route_state.gd")
+const Map = preload("res://Map/route_map.gd")
 var route = Route.new()
 var map_view
 var map_layer: CanvasLayer
@@ -39,9 +40,9 @@ func _ready() -> void:
  map_button.position=Vector2(1630,24)
  map_button.size=Vector2(250,60)
  map_button.add_theme_font_size_override("font_size",26)
- map_button.add_theme_stylebox_override("normal",map_view.style(Color("142234"),Color("ffd478"),8))
- map_button.add_theme_stylebox_override("hover",map_view.style(Color("293c50"),Color("ffd478"),8))
- map_button.add_theme_color_override("font_color",Color("ffd478"))
+ map_button.add_theme_stylebox_override("normal",map_view.style(Map.BUTTON,Map.BORDER))
+ map_button.add_theme_stylebox_override("hover",map_view.style(Map.BUTTON_HOVER,Map.BORDER))
+ map_button.add_theme_color_override("font_color",Map.TEXT)
  hud.add_child(map_button)
  map_button.pressed.connect(_toggle_map)
  get_viewport().size_changed.connect(_layout)
@@ -72,7 +73,8 @@ func _show_map():
  map_button.visible=state!="map"
  map_button.text="RETURN TO ENCOUNTER"
  if not route.pending.is_empty(): map_view._select(route.pending)
- else: map_view._select(route.current)
+ elif not route.current.is_empty(): map_view._select(route.current)
+ else: map_view._select("start")
  _layout()
 
 func _toggle_map():
@@ -209,19 +211,13 @@ func _add_floor_background() -> void:
   backdrop_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
   backdrop.add_child(backdrop_image)
  backdrop_image.texture = Floors.texture(Floors.FLOORS[floor_index].background)
- if backdrop.get_child_count() > 1: return
- var shade := ColorRect.new()
- shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
- shade.color = Color(0.025, 0.04, 0.07, 0.33)
- shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
- backdrop.add_child(shade)
 
 func _open_route_dialog(title: String, message: String, action_text: String, action: Callable) -> void:
  route_dialog = CanvasLayer.new()
  route_dialog.layer = 30
  add_child(route_dialog)
  var shade := ColorRect.new()
- shade.color = Color(0.015, 0.025, 0.045, 0.92)
+ shade.color = Color(0, 0, 0, 0.6)
  shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  route_dialog.add_child(shade)
  var center := CenterContainer.new()
@@ -229,7 +225,7 @@ func _open_route_dialog(title: String, message: String, action_text: String, act
  route_dialog.add_child(center)
  var panel := PanelContainer.new()
  panel.custom_minimum_size = Vector2(740, 380)
- var box_style = map_view.style(Color("142234"), Color("ffd478"), 14)
+ var box_style = map_view.style(Map.PANEL, Map.BORDER)
  box_style.set_content_margin_all(32)
  panel.add_theme_stylebox_override("panel", box_style)
  center.add_child(panel)
@@ -240,7 +236,7 @@ func _open_route_dialog(title: String, message: String, action_text: String, act
  heading.text = title
  heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
  heading.add_theme_font_size_override("font_size", 32)
- heading.add_theme_color_override("font_color", Color("ffd478"))
+ heading.add_theme_color_override("font_color", Map.ACCENT)
  box.add_child(heading)
  var body := Label.new()
  body.text = message
@@ -252,7 +248,7 @@ func _open_route_dialog(title: String, message: String, action_text: String, act
   button.text = item[0]
   button.custom_minimum_size.y = 56
   button.add_theme_font_size_override("font_size", 23)
-  button.add_theme_stylebox_override("normal", map_view.style(Color("20364a"), Color("ffd478"), 8))
-  button.add_theme_stylebox_override("hover", map_view.style(Color("344c63"), Color("ffe4a3"), 8))
+  button.add_theme_stylebox_override("normal", map_view.style(Map.BUTTON, Map.BORDER))
+  button.add_theme_stylebox_override("hover", map_view.style(Map.BUTTON_HOVER, Map.BORDER))
   button.pressed.connect(item[1])
   box.add_child(button)
