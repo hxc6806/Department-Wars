@@ -61,7 +61,10 @@ func end_turn() -> void:
 	for enemy in manager.enemy_container.get_children():
 		if enemy.get_node("Health").isdead():
 			continue
-		player_health.dmg(ENEMY_DAMAGE)
+		if enemy.functionality:
+			enemy.functionality.call(player_health.get_parent(), enemy)
+		else:
+			player_health.dmg(ENEMY_DAMAGE)
 		if manager.run_ended:
 			return
 		await get_tree().create_timer(0.25).timeout

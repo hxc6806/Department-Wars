@@ -1,21 +1,22 @@
 class_name enemy_data
 
+# Keys must match the floor names in Map/floors.gd exactly.
 static var ENEMIES = {
-	'Mushscroom': {
-		"name": 'Mushscroom',
-		"max_health": 95,
-		"texture": preload("res://Assets/EnemySprites/Mushscroom.png"),
+	"BUSINESS DEPARTMENT": {
+		'Mushscroom': {
+			"name": 'Mushscroom',
+			"max_health": 95,
+			"texture": preload("res://Assets/EnemySprites/Mushscroom.png"),
+			"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(4)
+		},
 	},
-	
-	'Zombiescroom': {
-		"name": 'Zombiescroom',
-		"max_health": 120,
-		"texture": preload("res://Assets/EnemySprites/Zombiescroom.png"),
-	}
+
+	"COMPUTER DEPARTMENT": {},
+	"MEDICAL DEPARTMENT": {}
 }
 
-static func get_data(key):
-	return ENEMIES[key]
+static func get_data(floor_name, key):
+	return ENEMIES[floor_name][key]
 
-static func get_keys():
-	return ENEMIES.keys()
+static func get_keys(floor_name):
+	return ENEMIES[floor_name].keys()
