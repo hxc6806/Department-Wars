@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://df2pk3mpy12ut"]
 
-[ext_resource type="Texture2D" uid="uid://dvqke3cyyk7y3" path="res://Assets/360_F_1183353574_NIqTGmHSQIVK5ljuKxwIGrIHbcHNLh2m.jpg" id="1_48xlc"]
+[ext_resource type="Texture2D" uid="uid://brsejjpv2stk" path="res://Assets/Untitled_Artwork.png" id="1_n45e2"]
 [ext_resource type="FontFile" uid="uid://cthj24jjfrhwh" path="res://Assets/pixel_font.ttf" id="2_1ehe0"]
-[ext_resource type="AudioStream" uid="uid://ckul4t6rorqb3" path="res://Scenes/Melancholic Orchestral Worldbuilding Music The Seraphina (No Copyright).mp3" id="3_n45e2"]
+[ext_resource type="AudioStream" uid="uid://ckbl2yln6w0ue" path="res://Assets/mainmenu.mp3" id="3_n45e2"]
 [ext_resource type="Script" uid="uid://clnrhvmc6jo66" path="res://Scenes/audio_control.gd" id="4_ce3w2"]
 [ext_resource type="Script" uid="uid://bt3dspi1bujq5" path="res://Scenes/fullscreen_control.gd" id="5_n45e2"]
 
@@ -32,8 +32,7 @@ func _on_back_options_pressed() -> void:
 "
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xaec"]
-texture = ExtResource("1_48xlc")
-modulate_color = Color(0.3515629, 0.3515629, 0.35156286, 1)
+texture = ExtResource("1_n45e2")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5xaec"]
 bg_color = Color(1, 1, 1, 1)
@@ -202,7 +201,6 @@ vertical_alignment = 1
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=410246597]
 stream = ExtResource("3_n45e2")
 autoplay = true
-bus = &"Music"
 
 [node name="Options" type="Panel" parent="." unique_id=1125336746]
 layout_mode = 1
@@ -270,8 +268,8 @@ text = "Fullscreen"
 script = ExtResource("5_n45e2")
 
 [connection signal="pressed" from="MainButtons/Button" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="MainButtons/Button2" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="MainButtons/Button2" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="MainButtons/Button2" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="MainButtons/Button3" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="Options/Back" to="." method="_on_back_options_pressed"]
 [connection signal="value_changed" from="Options/AudioControl" to="Options/AudioControl" method="_on_value_changed"]
