@@ -9,6 +9,12 @@ static var ENEMIES = {
 			"texture": preload("res://Assets/EnemySprites/Moneymare.webp"),
 			"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(4)
 		},
+		'Cashmere': {
+			"name": 'Mushscroom',
+			"max_health": 35,
+			"texture": preload("res://Assets/EnemySprites/Cashmere.png"),
+			"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(10)
+		},
 	},
 
 	"COMPUTER DEPARTMENT": {},

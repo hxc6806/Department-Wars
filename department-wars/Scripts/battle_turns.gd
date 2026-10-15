@@ -59,6 +59,8 @@ func end_turn() -> void:
 	manager.player_hand_ref.player_hand.clear()
 	manager.energy_changed.emit(manager.current_energy)
 	for enemy in manager.enemy_container.get_children():
+		if not is_instance_valid(enemy) or enemy.is_queued_for_deletion():
+			continue
 		if enemy.get_node("Health").isdead():
 			continue
 		if enemy.functionality:
