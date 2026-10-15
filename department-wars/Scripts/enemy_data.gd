@@ -3,10 +3,10 @@ class_name enemy_data
 # Keys must match the floor names in Map/floors.gd exactly.
 static var ENEMIES = {
 	"BUSINESS DEPARTMENT": {
-		'Mushscroom': {
+		'Moneymare': {
 			"name": 'Mushscroom',
 			"max_health": 95,
-			"texture": preload("res://Assets/EnemySprites/Mushscroom.png"),
+			"texture": preload("res://Assets/EnemySprites/Moneymare.webp"),
 			"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(4)
 		},
 	},
