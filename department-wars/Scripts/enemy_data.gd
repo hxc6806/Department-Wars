@@ -4,13 +4,13 @@ class_name enemy_data
 static var ENEMIES = {
 	"BUSINESS DEPARTMENT": {
 		'Moneymare': {
-			"name": 'Mushscroom',
+			"name": 'Moneymare',
 			"max_health": 95,
 			"texture": preload("res://Assets/EnemySprites/Moneymare.webp"),
 			"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(4)
 		},
 		'Cashmere': {
-			"name": 'Mushscroom',
+			"name": 'Cashmere',
 			"max_health": 35,
 			"texture": preload("res://Assets/EnemySprites/Cashmere.png"),
 			"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(10)
