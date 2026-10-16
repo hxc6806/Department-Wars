@@ -2,21 +2,20 @@ extends Control
 ## Standalone design preview. No battle, deck, menu or health scripts are modified.
 signal encounter_requested(id: String, encounter_type: String)
 const Route = preload("res://Map/route_state.gd")
-const GOLD = Color("ffd478")
-const INK = Color("111c2c")
-const MUTED = Color("8596ad")
-const DATA = {
- "start": [Vector2(490,520), "RECEPTION", "start", "Your journey begins here."],
- "a": [Vector2(330,455), "OFFICE FLOOR", "battle", "Standard battle\nProposed reward: choose one card."],
- "b": [Vector2(660,455), "SECURITY DIVISION", "elite", "Harder battle\nProposed reward: stronger card choices."],
- "c": [Vector2(220,350), "SUPPLY ROOM", "treasure", "Treasure stop\nProposed reward: choose a useful bonus."],
- "d": [Vector2(490,350), "CROSSROADS", "battle", "Standard battle\nProposed reward: choose one card."],
- "e": [Vector2(760,350), "STAFF LOUNGE", "rest", "Rest stop\nProposed effect: recover some health."],
- "f": [Vector2(335,245), "PATROL", "battle", "Standard battle\nProposed reward: choose one card."],
- "g": [Vector2(650,245), "ENFORCERS", "elite", "Harder battle\nProposed reward: stronger card choices."],
- "h": [Vector2(490,150), "EXECUTIVE HALL", "battle", "Last encounter before the department boss."],
- "boss": [Vector2(490,52), "DIRECTOR’S OFFICE", "boss", "Boss encounter coming soon."]
-}
+const Floors = preload("res://Map/floors.gd")
+## Neutral colours: plain dark greys, white text, square corners.
+const ACCENT = Color.WHITE
+const TEXT = Color("e6e6e6")
+const PANEL = Color("1e1e1e")
+const BORDER = Color("5a5a5a")
+const BUTTON = Color("2d2d2d")
+const BUTTON_HOVER = Color("3d3d3d")
+const MUTED = Color("a0a0a0")
+## On-screen size of each node image (map is laid out at 1152x648 and scaled to the window).
+const NODE_SIZE := 80.0
+var DATA = Floors.generate(RandomNumberGenerator.new())
+var district_title := "01 / " + Floors.FLOORS[0].name
+var background_path: String = Floors.FLOORS[0].background
 var route = Route.new()
 var selected := ""
 var buttons := {}
@@ -25,66 +24,64 @@ var heading: Label
 var detail: Label
 var action: Button
 var status: Label
-var small_font: Font
-var pixel_font: Font
 var map_origin := Vector2(30,58)
 
 func _ready():
- pixel_font = load("res://Map/Art/pixel_font.ttf")
- small_font = ThemeDB.fallback_font
  var bg = TextureRect.new()
- bg.texture = load("res://Map/Art/city.jpg")
+ bg.texture = Floors.texture(background_path)
  bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
  bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
  bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
  add_child(bg)
- var shade = ColorRect.new()
- shade.color = Color(0.025,0.05,0.09,0.91)
- shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
- shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
- add_child(shade)
  # Lines are drawn in a child so the background stays behind them.
  var lines = Node2D.new()
  lines.name = "Connections"
  add_child(lines)
  lines.draw.connect(_draw_connections.bind(lines))
- label_at("DEPARTMENT WARS", Vector2(30,18), 17, GOLD, true)
- label_at("01 / CITY DISTRICT", Vector2(770,19), 16, Color.WHITE)
+ #label_at("DEPARTMENT WARS", Vector2(30,18), 17, ACCENT)
+ #label_at(district_title, Vector2(770,19), 16, Color.WHITE)
  label_at("ROUTE DESIGN PREVIEW", Vector2(945,22), 11, MUTED)
  for id in DATA:
+  # Nodes are just the image: no background, ring or caption.
   var button = Button.new()
-  button.position = DATA[id][0] + map_origin - Vector2(26,26)
-  button.size = Vector2(52,52)
-  button.text = symbol(DATA[id][2])
-  button.add_theme_font_size_override("font_size",25)
-  button.tooltip_text = DATA[id][1]
+  button.position = DATA[id][0] + map_origin - Vector2.ONE*NODE_SIZE/2
+  button.size = Vector2.ONE*NODE_SIZE
+  for state in ["normal","hover","pressed","focus","disabled"]:
+   button.add_theme_stylebox_override(state,StyleBoxEmpty.new())
+  # Use the node image if it exists; otherwise fall back to the text symbol.
+  button.icon = Floors.texture(Floors.TYPES[DATA[id][2]].image)
+  if button.icon:
+   button.expand_icon = true
+   button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+  else:
+   button.text = symbol(DATA[id][2])
+  button.add_theme_font_size_override("font_size",36)
   button.pressed.connect(_select.bind(id))
-  button.mouse_entered.connect(func(): button.scale = Vector2(1.07,1.07))
+  button.mouse_entered.connect(func(): button.scale = Vector2(1.08,1.08))
   button.mouse_exited.connect(func(): button.scale = Vector2.ONE)
-  button.pivot_offset = Vector2(26,26)
+  button.pivot_offset = Vector2.ONE*NODE_SIZE/2
   add_child(button)
   buttons[id] = button
-  var caption = label_at(DATA[id][1],button.position + Vector2(-60,57),11,MUTED)
-  caption.size.x = 172
-  caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
  panel = Panel.new()
  panel.position = Vector2(870,100)
  panel.size = Vector2(260,440)
- panel.add_theme_stylebox_override("panel",style(Color("142234"),Color("344256"),12))
+ panel.add_theme_stylebox_override("panel",style(PANEL,BORDER))
  add_child(panel)
- heading = label_at("CHOOSE YOUR\nROUTE",Vector2(890,126),16,GOLD,true)
- detail = label_at("Select a glowing node.\n\nPreview the route ahead\nbefore committing.\n\nGold = available\nTeal = completed\nRing = current position",Vector2(890,202),17,Color("d6dfeb"))
+ heading = label_at("CHOOSE YOUR\nROUTE",Vector2(890,126),16,ACCENT)
+ detail = label_at("Select a bright node.\n\nPreview the route ahead\nbefore committing.\n\nWhite line = available path\nTeal line = completed path",Vector2(890,202),17,TEXT)
  detail.size = Vector2(220,190)
  detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  action = Button.new()
  action.position = Vector2(890,420)
  action.size = Vector2(220,52)
  action.text = "SELECT A NODE"
- action.add_theme_stylebox_override("normal",style(GOLD,GOLD,6))
- action.add_theme_stylebox_override("hover",style(Color("ffe5ad"),GOLD,6))
- action.add_theme_color_override("font_color",INK)
- action.add_theme_color_override("font_hover_color",INK)
+ action.add_theme_stylebox_override("normal",style(BUTTON,BORDER))
+ action.add_theme_stylebox_override("hover",style(BUTTON_HOVER,BORDER))
+ action.add_theme_stylebox_override("disabled",style(PANEL,BORDER))
+ action.add_theme_color_override("font_disabled_color",MUTED)
+ action.add_theme_color_override("font_color",TEXT)
+ action.add_theme_color_override("font_hover_color",ACCENT)
  action.add_theme_font_size_override("font_size",16)
  action.pressed.connect(_activate)
  add_child(action)
@@ -102,47 +99,39 @@ func _ready():
   detail.text="Select a glowing node to\nexplore another route."
   refresh())
  add_child(reset)
- label_at("BATTLE    /    ELITE    /    TREASURE    /    REST    /    BOSS",Vector2(30,629),11,MUTED)
+ #label_at("ASSIGNMENTS    /    QUIZZES    /    RESTAURANT    /    HOME    /    EXAM",Vector2(30,629),11,MUTED)
  refresh()
 
-func style(fill: Color, border: Color, radius: int) -> StyleBoxFlat:
+func style(fill: Color, border: Color) -> StyleBoxFlat:
  var s=StyleBoxFlat.new()
  s.bg_color=fill
  s.border_color=border
  s.set_border_width_all(2)
- s.set_corner_radius_all(radius)
  return s
 
-func label_at(text: String, pos: Vector2, font_size: int, color: Color, pixel := false) -> Label:
+func label_at(text: String, pos: Vector2, font_size: int, color: Color) -> Label:
  var l=Label.new()
  l.text=text
  l.position=pos
  l.add_theme_color_override("font_color",color)
  l.add_theme_font_size_override("font_size",font_size)
- l.add_theme_font_override("font",pixel_font if pixel else small_font)
  l.mouse_filter=Control.MOUSE_FILTER_IGNORE
  add_child(l)
  return l
 
 func symbol(kind: String) -> String:
- return {"start":"•", "battle":"⚔", "elite":"!", "treasure":"▣", "rest":"+", "boss":"♛"}[kind]
+ return Floors.TYPES[kind].symbol
 
 func refresh():
  for id in buttons:
   var available=route.available().has(id)
   var done=route.completed.has(id)
   var here=id == (route.pending if not route.pending.is_empty() else route.current)
-  var color=Color("72839a")
-  if available: color=GOLD
-  if done: color=Color("58c9b4")
-  if here: color=Color("f4f2e7")
-  var b: Button=buttons[id]
-  b.add_theme_stylebox_override("normal",style(INK,color,26))
-  b.add_theme_stylebox_override("hover",style(Color("293c50"),color,26))
-  b.add_theme_stylebox_override("focus",style(Color(0,0,0,0),Color.WHITE,26))
-  b.add_theme_color_override("font_color",color)
-  b.add_theme_color_override("font_hover_color",Color.WHITE)
-  b.modulate.a=1.0 if available or done or here or id==selected else 0.85
+  # No ring any more: brightness shows state. Available/current = full, completed = slightly dim, locked = dark.
+  var tint=Color(0.4,0.4,0.45)
+  if done: tint=Color(0.7,0.7,0.7)
+  if available or here: tint=Color.WHITE
+  buttons[id].modulate=tint
  action.disabled=not route.available().has(selected) and route.pending.is_empty()
  action.text="COMPLETE PREVIEW STOP" if not route.pending.is_empty() else "TRAVEL HERE"
  status.text="Preview only: combat, rewards\nand healing are not connected."
@@ -169,14 +158,13 @@ func _activate():
  refresh()
 
 func _draw_connections(canvas: Node2D):
- for source in Route.GRAPH:
-  for target in Route.GRAPH[source]:
+ for source in route.graph:
+  for target in route.graph[source]:
    var a: Vector2=DATA[source][0]+map_origin
    var b: Vector2=DATA[target][0]+map_origin
-   var colour=Color("64748b")
-   if source==route.current and route.pending.is_empty(): colour=GOLD
-   elif route.completed.has(target) and (route.completed.has(source) or source=="start"): colour=Color("58c9b4")
+   var colour=Color("6e6e6e")
+   if source==route.current and route.pending.is_empty(): colour=ACCENT
+   elif route.completed.has(target) and route.completed.has(source): colour=Color("58c9b4")
    var delta=(b-a).normalized()
-   canvas.draw_line(a+delta*32,b-delta*32,colour,2.0,true)
- var center: Vector2=DATA[route.pending if not route.pending.is_empty() else route.current][0]+map_origin
- canvas.draw_arc(center,33,0,TAU,64,Color("f4f2e7"),2,true)
+   var gap=NODE_SIZE/2+4
+   canvas.draw_line(a+delta*gap,b-delta*gap,colour,2.0,true)

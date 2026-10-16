@@ -6,6 +6,7 @@ const BAR_GAP = 10.0   # pixels between sprite top and bar bottom
 @onready var health_bar: TextureProgressBar = $HealthBar
 @onready var health: Health = $Health
 @onready var dmg_label: Label = $dmg_label
+var functionality = null   # set by enemy_container from enemy_data; called on the enemy turn
 
 func _ready() -> void:
 	var sprite_size = sprite.get_rect().size * sprite.scale

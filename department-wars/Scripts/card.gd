@@ -1,4 +1,5 @@
 extends Node2D
+const UI = preload("res://Map/route_map.gd")
 
 signal hovered(card)
 signal hovered_off(card)
@@ -22,10 +23,9 @@ func _create_cost_indicator() -> void:
 	badge.custom_minimum_size = Vector2(76, 42)
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	cost_style = StyleBoxFlat.new()
-	cost_style.bg_color = Color("172637")
-	cost_style.border_color = Color("f1c66d")
+	cost_style.bg_color = UI.BUTTON
+	cost_style.border_color = UI.BORDER
 	cost_style.set_border_width_all(2)
-	cost_style.set_corner_radius_all(9)
 	badge.add_theme_stylebox_override("panel", cost_style)
 	add_child(badge)
 	cost_label = Label.new()
@@ -44,7 +44,7 @@ func _create_cost_indicator() -> void:
 	unavailable_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	unavailable_label.add_theme_font_size_override("font_size", 18)
 	unavailable_label.add_theme_color_override("font_color", Color("ff8585"))
-	unavailable_label.add_theme_color_override("font_outline_color", Color("131721"))
+	unavailable_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	unavailable_label.add_theme_constant_override("outline_size", 6)
 	unavailable_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(unavailable_label)
@@ -52,7 +52,7 @@ func _create_cost_indicator() -> void:
 func _update_affordability(available: int) -> void:
 	var affordable := available >= int(card_data.get_data(card_id)["energy_cost"])
 	$CardSprite.self_modulate = Color.WHITE if affordable else Color(0.48, 0.48, 0.48, 0.8)
-	var accent := Color("f1c66d") if affordable else Color("ff8585")
+	var accent := UI.TEXT if affordable else Color("ff8585")
 	cost_style.border_color = accent
 	cost_label.add_theme_color_override("font_color", accent)
 	unavailable_label.visible = not affordable

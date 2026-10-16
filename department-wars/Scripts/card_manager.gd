@@ -2,6 +2,7 @@ extends Node2D
 
 const COLLISION_MASK_CARD = 1
 const DEFAULT_CARD_SPEED = 0.1
+const UI = preload("res://Map/route_map.gd")
 
 signal energy_changed(available: int)
 
@@ -26,10 +27,9 @@ func _create_energy_display() -> void:
 	panel.position = Vector2(28, 28)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("151b2bee")
-	style.border_color = Color("f1c66d")
+	style.bg_color = UI.PANEL
+	style.border_color = UI.BORDER
 	style.set_border_width_all(2)
-	style.set_corner_radius_all(12)
 	style.content_margin_left = 20
 	style.content_margin_right = 20
 	style.content_margin_top = 12
@@ -39,7 +39,7 @@ func _create_energy_display() -> void:
 	energy_label = Label.new()
 	energy_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	energy_label.add_theme_font_size_override("font_size", 28)
-	energy_label.add_theme_color_override("font_color", Color("f1c66d"))
+	energy_label.add_theme_color_override("font_color", UI.TEXT)
 	panel.add_child(energy_label)
 	_update_energy_display()
 	_setup_deck_overlay(layer)
@@ -52,7 +52,7 @@ func _setup_deck_overlay(hud_layer: CanvasLayer) -> void:
 	
 	#Makes background dimmed
 	var bg := ColorRect.new()
-	bg.color = Color(0, 0, 0, 0.85)
+	bg.color = Color(0, 0, 0, 0.6)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	deck_overlay.add_child(bg)
 	
@@ -62,10 +62,9 @@ func _setup_deck_overlay(hud_layer: CanvasLayer) -> void:
 	center_panel.anchors_preset = Control.PRESET_CENTER
 	center_panel.position = (get_viewport_rect().size - Vector2(800, 500)) / 2.0
 	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = Color("151b2b")
-	panel_style.border_color = Color("f10000ff")
+	panel_style.bg_color = UI.PANEL
+	panel_style.border_color = UI.BORDER
 	panel_style.set_border_width_all(2)
-	panel_style.set_corner_radius_all(16)
 	panel_style.content_margin_left = 20
 	panel_style.content_margin_right = 20
 	panel_style.content_margin_top = 20
@@ -81,7 +80,7 @@ func _setup_deck_overlay(hud_layer: CanvasLayer) -> void:
 	title.text = "YOUR DECK"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 26)
-	title.add_theme_color_override("font_color", Color("f10000ff"))
+	title.add_theme_color_override("font_color", UI.ACCENT)
 	vbox.add_child(title)
 	
 	#Allows scrolling
@@ -99,6 +98,12 @@ func _setup_deck_overlay(hud_layer: CanvasLayer) -> void:
 	close_btn.text = "CLOSE"
 	close_btn.custom_minimum_size = Vector2(140, 40)
 	close_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	for state in ["normal", "hover", "pressed"]:
+		var btn_style := StyleBoxFlat.new()
+		btn_style.bg_color = UI.BUTTON_HOVER if state == "hover" else UI.BUTTON
+		btn_style.border_color = UI.BORDER
+		btn_style.set_border_width_all(2)
+		close_btn.add_theme_stylebox_override(state, btn_style)
 	close_btn.pressed.connect(func(): deck_overlay.hide())
 	vbox.add_child(close_btn)
 	
@@ -137,7 +142,7 @@ func show_deck_overlay() -> void:
 			name_label.text = card_name
 			name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			name_label.add_theme_font_size_override("font_size", 16)
-			name_label.add_theme_color_override("font_color", Color("f10000ff"))
+			name_label.add_theme_color_override("font_color", UI.TEXT)
 			card_box.add_child(name_label)
 			
 			deck_grid.add_child(card_box)

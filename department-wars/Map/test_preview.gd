@@ -6,6 +6,10 @@ func run():
  root.add_child(scene)
  await process_frame
  assert(scene.buttons.size()==10)
+ scene._select("start")
+ scene._activate()
+ scene._activate()
+ assert(scene.route.current=="start")
  scene._select("boss")
  assert(scene.action.disabled)
  scene._select("b")

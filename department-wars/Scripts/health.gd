@@ -6,7 +6,10 @@ signal damaged
 signal healed
 signal died
 
-@export var max_health: int = 100
+@export var max_health: int = 100:
+	set(value):
+		max_health = value
+		health_changed.emit(0)
 var current_health: int
 
 func _ready() -> void:

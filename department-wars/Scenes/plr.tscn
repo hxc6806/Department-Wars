@@ -11,7 +11,7 @@
 offset_top = 97.91998
 offset_bottom = -20.0
 
-[node name="HealthBar" parent="plr_interface" index="2" unique_id=333432174 node_paths=PackedStringArray("health")]
+[node name="HealthBar" parent="plr_interface" index="0" unique_id=333432174 node_paths=PackedStringArray("health")]
 health = NodePath("../../Health")
 
 [editable path="plr_interface"]

@@ -1,6 +1,8 @@
 extends Node
 ## Owns map progress for this run; player and deck survive scene transitions.
+const Floors = preload("res://Map/floors.gd")
 const Route = preload("res://Map/route_state.gd")
+const Map = preload("res://Map/route_map.gd")
 var route = Route.new()
 var map_view
 var map_layer: CanvasLayer
@@ -10,19 +12,26 @@ var reward: Node
 var encounter_enemy_count := 2
 var rewards_remaining := 0
 var state := "map"
+var floor_index := 0
+## One node layout per floor. Rolled on _ready unless set beforehand (tests set fixed layouts).
+var layouts: Array = []
+var backdrop: CanvasLayer
+var backdrop_image: TextureRect
+var route_dialog: CanvasLayer
 
 func _enter_tree() -> void:
  deck.player_deck = {"Fireball": 1, "Slash": 3}
 
 func _ready() -> void:
+ if layouts.is_empty():
+  var rng=RandomNumberGenerator.new()
+  rng.randomize()
+  for i in Floors.FLOORS.size(): layouts.append(Floors.generate(rng))
+ _add_floor_background()
  map_layer=CanvasLayer.new()
  map_layer.layer=20
  add_child(map_layer)
- map_view=Control.new()
- map_view.set_script(preload("res://Map/game_map.gd"))
- map_view.route=route
- map_layer.add_child(map_view)
- map_view.encounter_requested.connect(_enter_encounter)
+ _build_map()
  var hud=CanvasLayer.new()
  hud.layer=21
  add_child(hud)
@@ -31,14 +40,17 @@ func _ready() -> void:
  map_button.position=Vector2(1630,24)
  map_button.size=Vector2(250,60)
  map_button.add_theme_font_size_override("font_size",26)
- map_button.add_theme_stylebox_override("normal",map_view.style(Color("142234"),Color("ffd478"),8))
- map_button.add_theme_stylebox_override("hover",map_view.style(Color("293c50"),Color("ffd478"),8))
- map_button.add_theme_color_override("font_color",Color("ffd478"))
+ map_button.add_theme_stylebox_override("normal",map_view.style(Map.BUTTON,Map.BORDER))
+ map_button.add_theme_stylebox_override("hover",map_view.style(Map.BUTTON_HOVER,Map.BORDER))
+ map_button.add_theme_color_override("font_color",Map.TEXT)
  hud.add_child(map_button)
  map_button.pressed.connect(_toggle_map)
  get_viewport().size_changed.connect(_layout)
  _layout()
  _show_map()
+ if OS.has_feature("editor"):
+  var tools = preload("res://Map/debug_tools.gd").new()
+  add_child(tools)
 
 func _layout():
  var viewport_size=get_viewport().get_visible_rect().size
@@ -61,11 +73,12 @@ func _show_map():
  map_button.visible=state!="map"
  map_button.text="RETURN TO ENCOUNTER"
  if not route.pending.is_empty(): map_view._select(route.pending)
- else: map_view._select(route.current)
+ elif not route.current.is_empty(): map_view._select(route.current)
+ else: map_view._select("start")
  _layout()
 
 func _toggle_map():
- if state=="map" or state=="transition": return
+ if state not in ["battle", "reward"]: return
  # Inspection only during an encounter. Finish enemy animations first.
  if is_instance_valid(battle):
   var manager=battle.get_node_or_null("CardManager")
@@ -85,7 +98,7 @@ func _enter_encounter(_id: String, kind: String):
  if kind=="rest":
   $plr/Health.heal(25)
   route.finish()
-  _show_map()
+  _finish_route_or_show_map()
   return
  map_layer.hide()
  $plr/plr_interface.show()
@@ -137,4 +150,105 @@ func _after_reward():
  else:
   route.finish()
   state="map"
-  _show_map()
+  _finish_route_or_show_map()
+
+
+func _build_map() -> void:
+ if is_instance_valid(map_view):
+  map_layer.remove_child(map_view)
+  map_view.queue_free()
+ map_view = Control.new()
+ map_view.set_script(preload("res://Map/game_map.gd"))
+ map_view.route = route
+ var floor_data: Dictionary = Floors.FLOORS[floor_index]
+ map_view.DATA = layouts[floor_index].duplicate(true)
+ map_view.district_title = "%02d / %s" % [floor_index + 1, floor_data.name]
+ map_view.background_path = floor_data.background
+ map_layer.add_child(map_view)
+ map_view.encounter_requested.connect(_enter_encounter)
+
+func is_last_floor() -> bool:
+ return floor_index >= Floors.FLOORS.size() - 1
+
+func _finish_route_or_show_map() -> void:
+ _show_map()
+ if route.current != "h": return
+ state = "complete" if is_last_floor() else "floor_clear"
+ map_view.read_only = true
+ map_view.refresh()
+ map_button.hide()
+ var cleared: String = Floors.FLOORS[floor_index].name
+ if is_last_floor():
+  _open_route_dialog(cleared + " COMPLETE", "You cleared every department.", "NEW RUN", func(): get_tree().reload_current_scene())
+ else:
+  var next: String = Floors.FLOORS[floor_index + 1].name
+  _open_route_dialog(cleared + " COMPLETE", "The %s is open.\nCarry your current health and deck onto the next floor." % next.capitalize(), "ENTER " + next, start_next_floor)
+
+func start_next_floor() -> void:
+ # Only switch floors between encounters. Existing health/deck are retained.
+ if is_last_floor() or state not in ["map", "floor_clear"]: return
+ if is_instance_valid(route_dialog):
+  route_dialog.queue_free()
+  route_dialog = null
+ floor_index += 1
+ route = Route.new()
+ route.configure(Floors.GRAPH)
+ state = "map"
+ _build_map()
+ _add_floor_background()
+ _show_map()
+
+## Full-screen floor image shown behind battles and rewards.
+func _add_floor_background() -> void:
+ if not is_instance_valid(backdrop):
+  backdrop = CanvasLayer.new()
+  backdrop.layer = -5
+  add_child(backdrop)
+  backdrop_image = TextureRect.new()
+  backdrop_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+  backdrop_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+  backdrop_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+  backdrop_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+  backdrop.add_child(backdrop_image)
+ backdrop_image.texture = Floors.texture(Floors.FLOORS[floor_index].background)
+
+func _open_route_dialog(title: String, message: String, action_text: String, action: Callable) -> void:
+ route_dialog = CanvasLayer.new()
+ route_dialog.layer = 30
+ add_child(route_dialog)
+ var shade := ColorRect.new()
+ shade.color = Color(0, 0, 0, 0.6)
+ shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ route_dialog.add_child(shade)
+ var center := CenterContainer.new()
+ center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ route_dialog.add_child(center)
+ var panel := PanelContainer.new()
+ panel.custom_minimum_size = Vector2(740, 380)
+ var box_style = map_view.style(Map.PANEL, Map.BORDER)
+ box_style.set_content_margin_all(32)
+ panel.add_theme_stylebox_override("panel", box_style)
+ center.add_child(panel)
+ var box := VBoxContainer.new()
+ box.add_theme_constant_override("separation", 24)
+ panel.add_child(box)
+ var heading := Label.new()
+ heading.text = title
+ heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ heading.add_theme_font_size_override("font_size", 32)
+ heading.add_theme_color_override("font_color", Map.ACCENT)
+ box.add_child(heading)
+ var body := Label.new()
+ body.text = message
+ body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ body.add_theme_font_size_override("font_size", 23)
+ box.add_child(body)
+ for item in [[action_text, action], ["RETURN TO MENU", func(): get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")]]:
+  var button := Button.new()
+  button.text = item[0]
+  button.custom_minimum_size.y = 56
+  button.add_theme_font_size_override("font_size", 23)
+  button.add_theme_stylebox_override("normal", map_view.style(Map.BUTTON, Map.BORDER))
+  button.add_theme_stylebox_override("hover", map_view.style(Map.BUTTON_HOVER, Map.BORDER))
+  button.pressed.connect(item[1])
+  box.add_child(button)
