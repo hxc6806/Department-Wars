@@ -21,6 +21,18 @@ static var ENEMIES = {
 	"MEDICAL DEPARTMENT": {}
 }
 
+static var BOSSES = {
+	"BUSINESS DEPARTMENT": {
+		"name": 'Business Boss',
+		"max_health": 200,
+		"texture": preload("res://Assets/EnemySprites/Business_Boss.png"),
+		"functionality": func(plrObj, _enemyObj): plrObj.get_node("Health").dmg(12)
+	},
+}
+
+static func get_boss(floor_name):
+	return BOSSES.get(floor_name, BOSSES["BUSINESS DEPARTMENT"])
+
 static func get_data(floor_name, key):
 	return ENEMIES[floor_name][key]
 
