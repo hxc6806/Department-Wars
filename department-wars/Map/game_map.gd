@@ -16,13 +16,13 @@ func _select(id: String):
 func refresh():
  super.refresh()
  action.text="TRAVEL HERE"
- action.disabled=read_only or not route.available().has(selected) or selected=="boss"
+ action.disabled=read_only or not route.available().has(selected)
  var game=get_parent().get_parent()
  var health=game.get_node_or_null("plr/Health")
  status.text="HP %d / %d" % [health.current_health,health.max_health] if health else ""
- if route.current=="h": status.text+="\nRoute complete."
+ if route.current=="h": status.text+="\nThe Exam awaits."
 func _activate():
- if read_only or selected=="boss": return
+ if read_only: return
  if route.enter(selected):
   encounter_requested.emit(selected,DATA[selected][2])
  refresh()

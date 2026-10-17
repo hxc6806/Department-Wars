@@ -10,6 +10,7 @@ var map_button: Button
 var battle: Node
 var reward: Node
 var encounter_enemy_count := 2
+var is_boss_encounter := false
 var rewards_remaining := 0
 var state := "map"
 var floor_index := 0
@@ -105,11 +106,12 @@ func _enter_encounter(_id: String, kind: String):
  map_button.show()
  map_button.text="MAP"
  _layout()
- rewards_remaining=2 if kind=="elite" else 1
+ rewards_remaining=3 if kind=="boss" else 2 if kind=="elite" else 1
  if kind=="treasure":
   _open_reward()
  else:
   state="battle"
+  is_boss_encounter=kind=="boss"
   encounter_enemy_count=3 if kind=="elite" else 2
   battle=load("res://Scenes/battle_scene.tscn").instantiate()
   add_child(battle)
@@ -149,6 +151,14 @@ func _after_reward():
   _open_reward()
  else:
   route.finish()
+  if is_boss_encounter:
+   is_boss_encounter=false
+   if is_last_floor():
+    get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
+    return
+   state="floor_clear"
+   start_next_floor()
+   return
   state="map"
   _finish_route_or_show_map()
 
@@ -172,17 +182,6 @@ func is_last_floor() -> bool:
 
 func _finish_route_or_show_map() -> void:
  _show_map()
- if route.current != "h": return
- state = "complete" if is_last_floor() else "floor_clear"
- map_view.read_only = true
- map_view.refresh()
- map_button.hide()
- var cleared: String = Floors.FLOORS[floor_index].name
- if is_last_floor():
-  _open_route_dialog(cleared + " COMPLETE", "You cleared every department.", "NEW RUN", func(): get_tree().reload_current_scene())
- else:
-  var next: String = Floors.FLOORS[floor_index + 1].name
-  _open_route_dialog(cleared + " COMPLETE", "The %s is open.\nCarry your current health and deck onto the next floor." % next.capitalize(), "ENTER " + next, start_next_floor)
 
 func start_next_floor() -> void:
  # Only switch floors between encounters. Existing health/deck are retained.

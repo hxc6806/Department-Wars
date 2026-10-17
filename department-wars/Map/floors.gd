@@ -23,7 +23,7 @@ const TYPES = {
  "elite": {"name": "QUIZZES", "symbol": "!", "image": "res://Assets/MapNodes/quizzes.png", "text": "Battle three enemies.\nWin and choose two cards."},
  "treasure": {"name": "RESTAURANT", "symbol": "▣", "image": "res://Assets/MapNodes/restaurant.png", "text": "Choose one card to add\nto your deck."},
  "rest": {"name": "HOME", "symbol": "+", "image": "res://Assets/MapNodes/home.png", "text": "Recover 25 health, up to\nyour maximum health."},
- "boss": {"name": "EXAM", "symbol": "♛", "image": "res://Assets/MapNodes/exam.png", "text": "Exam coming soon."},
+ "boss": {"name": "EXAM", "symbol": "♛", "image": "res://Assets/MapNodes/exam.png", "text": "Defeat the department boss.\nWin to reach the next floor."},
 }
 const MIDDLE = ["a", "b", "c", "d", "e", "f", "g", "h"]
 const WEIGHTS = {"battle": 50, "elite": 20, "treasure": 15, "rest": 15}
