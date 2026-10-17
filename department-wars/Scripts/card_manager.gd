@@ -145,9 +145,70 @@ func show_deck_overlay() -> void:
 			name_label.add_theme_color_override("font_color", UI.TEXT)
 			card_box.add_child(name_label)
 			
+			#Allow cards to right click for descriptions
+			card_box.mouse_filter = Control.MOUSE_FILTER_STOP
+			card_box.gui_input.connect(func(event: InputEvent):
+				if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+					show_card_description(card_name, data)
+			)
+			
 			deck_grid.add_child(card_box)
 			
 	deck_overlay.show()
+
+func show_card_description(card_name: String, data: Dictionary) -> void:
+	var existing_popup = deck_overlay.get_node_or_null("CardDescriptionPopup")
+	if existing_popup:
+		existing_popup.queue_free()
+		
+	var popup_panel = PanelContainer.new()
+	popup_panel.name = "CardDescriptionPopup"
+	popup_panel.custom_minimum_size = Vector2(300, 180)
+	popup_panel.anchors_preset = Control.PRESET_CENTER
+	popup_panel.position = (get_viewport_rect().size - Vector2(300, 180)) / 2.0
+	
+	var p_style := StyleBoxFlat.new()
+	p_style.bg_color = UI.PANEL
+	p_style.border_color = UI.ACCENT
+	p_style.set_border_width_all(2)
+	p_style.content_margin_left = 15
+	p_style.content_margin_right = 15
+	p_style.content_margin_top = 15
+	p_style.content_margin_bottom = 15
+	popup_panel.add_theme_stylebox_override("panel", p_style)
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 10)
+	popup_panel.add_child(vbox)
+	
+	var title_lbl = Label.new()
+	title_lbl.text = card_name
+	title_lbl.add_theme_font_size_override("font_size", 20)
+	title_lbl.add_theme_color_override("font_color", UI.ACCENT)
+	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title_lbl)
+	
+	var cost_lbl = Label.new()
+	cost_lbl.text = "Energy Cost: %d EP" % int(data.get("energy_cost", 0))
+	cost_lbl.add_theme_font_size_override("font_size", 14)
+	cost_lbl.add_theme_color_override("font_color", UI.TEXT)
+	vbox.add_child(cost_lbl)
+	
+	var desc_lbl = Label.new()
+	desc_lbl.text = data.get("description", "No description available.")
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_lbl.add_theme_font_size_override("font_size", 14)
+	desc_lbl.add_theme_color_override("font_color", UI.TEXT)
+	vbox.add_child(desc_lbl)
+	
+	var close_popup_btn = Button.new()
+	close_popup_btn.text = "OK"
+	close_popup_btn.custom_minimum_size = Vector2(100, 30)
+	close_popup_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	close_popup_btn.pressed.connect(func(): popup_panel.queue_free())
+	vbox.add_child(close_popup_btn)
+	
+	deck_overlay.add_child(popup_panel)
 
 func _update_energy_display() -> void:
 	energy_label.text = "ENERGY  %d / %d" % [current_energy, max_energy]
