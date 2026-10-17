@@ -148,7 +148,7 @@ func show_deck_overlay() -> void:
 			#Allow cards to right click for descriptions
 			card_box.mouse_filter = Control.MOUSE_FILTER_STOP
 			card_box.gui_input.connect(func(event: InputEvent):
-				if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT:
+				if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 					show_card_description(card_name, data)
 			)
 			
