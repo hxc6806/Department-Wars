@@ -153,11 +153,9 @@ func _after_reward():
   route.finish()
   if is_boss_encounter:
    is_boss_encounter=false
-   if is_last_floor():
-    get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
-    return
    state="floor_clear"
-   start_next_floor()
+   if is_last_floor(): get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
+   else: start_next_floor()
    return
   state="map"
   _finish_route_or_show_map()
