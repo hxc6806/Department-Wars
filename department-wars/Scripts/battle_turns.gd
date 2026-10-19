@@ -63,16 +63,33 @@ func end_turn() -> void:
 			continue
 		if enemy.get_node("Health").isdead():
 			continue
+		var can_act = status_effect.tick(enemy)
+		# Poison/Burn can kill it before it acts
+		if enemy.get_node("Health").isdead() or not can_act:
+			await get_tree().create_timer(0.25).timeout
+			continue
+		Health.attacker = enemy
 		if enemy.functionality:
 			enemy.functionality.call(player_health.get_parent(), enemy)
 		else:
 			player_health.dmg(ENEMY_DAMAGE)
+		Health.attacker = null
 		if manager.run_ended:
 			return
 		await get_tree().create_timer(0.25).timeout
 	turn_number += 1
+	var plr_can_act = status_effect.tick(player_health.get_parent())
+	# Poison/Burn can kill the player here
+	if manager.run_ended:
+		return
 	manager.current_energy = manager.max_energy
 	manager.get_node("../Deck").reset_for_turn()
+	if not plr_can_act:
+		# Stunned: pause so it's visible, then hand straight back to the enemies
+		await get_tree().create_timer(0.6).timeout
+		manager.player_turn = true
+		end_turn()
+		return
 	manager.player_turn = true
 	manager._update_energy_display()
 

@@ -1,7 +1,5 @@
 extends Node
-# User story: As a player, I want my health bar to update when my max health
-# increases, so I can see my real HP after an upgrade.
-# Run: open tests/test_health_bar_max_upgrade.tscn and press F6. Results print to Output.
+
 var errors := 0
 func check(ok: bool, message: String):
  print(("PASS: " if ok else "FAIL: ")+message)

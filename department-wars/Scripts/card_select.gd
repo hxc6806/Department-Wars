@@ -1,6 +1,7 @@
 extends TextureButton
 
 var card_id
+var deck_id
 
 func _ready() -> void:
 	mouse_entered.connect(highlight)
@@ -8,6 +9,9 @@ func _ready() -> void:
 	pressed.connect(on_press)
 
 func on_press():
+	if deck_id:
+		card_data.choose_deck(deck_id)
+		return
 	if deck.player_deck.has(card_id):
 		deck.player_deck[card_id] += 1
 	else:

@@ -305,7 +305,10 @@ func finish_drag():
 		if enemy and can_afford(str(card_being_dragged.card_id)):
 			current_energy -= int(card_data.get_data(card_being_dragged.card_id)["energy_cost"])
 			_update_energy_display()
-			card_data.get_data(card_being_dragged.card_id)['functionality'].call(enemy)
+			var plr = get_parent().get_parent().get_node_or_null("plr")
+			Health.attacker = plr
+			card_data.get_data(card_being_dragged.card_id)['functionality'].call(plr, enemy)
+			Health.attacker = null
 			
 			player_hand_ref.remove_card_from_hand(card_being_dragged)
 			card_being_dragged.queue_free()

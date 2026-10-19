@@ -19,9 +19,13 @@ var layouts: Array = []
 var backdrop: CanvasLayer
 var backdrop_image: TextureRect
 var route_dialog: CanvasLayer
+## Show the character deck pick before the map (tests turn this off).
+var choose_starting_deck := true
 
 func _enter_tree() -> void:
  deck.player_deck = {"Fireball": 1, "Slash": 3}
+ card_data.loot_pool = []
+ card_data.chosen_deck = ""
 
 func _ready() -> void:
  if layouts.is_empty():
@@ -48,7 +52,8 @@ func _ready() -> void:
  map_button.pressed.connect(_toggle_map)
  get_viewport().size_changed.connect(_layout)
  _layout()
- _show_map()
+ if choose_starting_deck: _open_deck_select()
+ else: _show_map()
  if OS.has_feature("editor"):
   var tools = preload("res://Map/debug_tools.gd").new()
   add_child(tools)
@@ -122,6 +127,7 @@ func battle_won():
  call_deferred("_after_battle")
 
 func _after_battle():
+ status_effect.clear($plr)
  map_button.disabled=true
  await get_tree().create_timer(1.1).timeout
  map_button.disabled=false
@@ -135,6 +141,29 @@ func _open_reward():
  state="reward"
  reward=load("res://Scenes/card_select.tscn").instantiate()
  add_child(reward)
+
+## Same 3-card picker as rewards, but showing the character decks.
+func _open_deck_select():
+ state="deck_select"
+ map_layer.hide()
+ map_button.hide()
+ $plr/plr_interface.hide()
+ reward=load("res://Scenes/card_select.tscn").instantiate()
+ reward.choosing_deck=true
+ add_child(reward)
+
+func deck_chosen():
+ if state!="deck_select": return
+ state="transition"
+ call_deferred("_after_deck_select")
+
+func _after_deck_select():
+ if is_instance_valid(reward):
+  remove_child(reward)
+  reward.queue_free()
+ reward=null
+ state="map"
+ _show_map()
 
 func reward_chosen():
  if state!="reward": return
