@@ -29,14 +29,32 @@ static var ENEMIES = {
 					status_effect.apply(plrObj, 'Stun', 1),
 		},
 		'Robokey': {
-			"name": 'Mechamon',
+			"name": 'Robokey',
 			"max_health": 35,
 			"texture": preload("res://Assets/EnemySprites/Robokey.png"),
 			"functionality": func(plrObj, _enemyObj):
 				plrObj.get_node("Health").dmg(35),
 		},
 	},
-	"MEDICAL DEPARTMENT": {}
+	"MEDICAL DEPARTMENT": {
+		'Betsy': {
+			"name": 'Betsy',
+			"max_health": 200,
+			"texture": preload("res://Assets/EnemySprites/Betsy.png"),
+			"functionality": func(plrObj, _enemyObj):
+				plrObj.get_node("Health").dmg(20)
+				var rand = randi_range(1, 3)
+				if rand == 3:
+					status_effect.apply(plrObj, 'Stun', 1),
+		},
+		'Frogter': {
+			"name": 'Frogter',
+			"max_health": 10,
+			"texture": preload("res://Assets/EnemySprites/Frogter.png"),
+			"functionality": func(plrObj, _enemyObj):
+				plrObj.get_node("Health").heal(35),
+		},
+	}
 }
 
 static var BOSSES = {
@@ -55,6 +73,18 @@ static var BOSSES = {
 			if rand == 3:
 				status_effect.apply(_enemyObj, 'Thorns', 1)
 			plrObj.get_node("Health").dmg(12)
+			status_effect.apply(plrObj, 'Poison', 3),
+	},
+	"MEDICAL DEPARTMENT": {
+		"name": 'Death Spider',
+		"max_health": 255,
+		"texture": preload("res://Assets/EnemySprites/Medical_Boss.png"),
+		"functionality": func(plrObj, _enemyObj):
+			var rand = randi_range(1, 3)
+			if rand == 3:
+				status_effect.apply(_enemyObj, 'Regen', 1)
+				status_effect.apply(_enemyObj, 'Thorns', 1)
+			plrObj.get_node("Health").dmg(22)
 			status_effect.apply(plrObj, 'Poison', 3),
 	},
 }
