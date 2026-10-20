@@ -17,6 +17,9 @@ var dmg_taken_multiplier := 1.0
 var dmg_reflect_multiplier := 0.0
 # Whoever is currently dealing damage (set by card_manager / battle_turns around each card or enemy action)
 static var attacker: Node = null
+# Played every time dmg() lands. Volume is linear (1.0 = 100%)
+const DMG_SOUND = "res://Assets/SoundEffects/dmg.ogg"
+const DMG_VOLUME = .075
 
 func _ready() -> void:
 	current_health = max_health
@@ -38,6 +41,7 @@ func dmg(amount: int, reflectable := true) -> void:
 	var reflected = int(round(amount * dmg_reflect_multiplier))
 	amount = int(round(amount * dmg_taken_multiplier))
 	change_hp(-amount)
+	sfx.play(DMG_SOUND, DMG_VOLUME)
 	damaged.emit()
 	if current_health <= 0:
 		died.emit()

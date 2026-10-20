@@ -5,11 +5,14 @@ class_name status_effect
 # skips_turn: the enemy loses its action while the status is on it.
 # tint: colour the enemy sprite turns while the status is on it (blended if it has several).
 # dmg_taken_multiplier / dmg_reflect_multiplier: copied onto the target's Health while the status is on it.
+# sound / volume: played when the status is applied (volume is linear, 1.0 = 100%).
 static var STATUSES = {
 	'Poison': {
 		"name": 'Poison',
 		"description": "Takes X damage at the start of its turn, then X goes down by 1",
 		"tint": Color(0.55, 1.0, 0.45),
+		"sound": "res://Assets/SoundEffects/Poison.mp3",
+		"volume": .15,
 		"on_turn_start": func(enemyObj, stacks):
 			enemyObj.get_node("Health").dmg(stacks)
 			return stacks - 1,
@@ -19,6 +22,8 @@ static var STATUSES = {
 		"name": 'Burn',
 		"description": "Takes 5 damage at the start of its turn for X turns",
 		"tint": Color(1.0, 0.6, 0.25),
+		"sound": "res://Assets/SoundEffects/Burn.ogg",
+		"volume": .15,
 		"on_turn_start": func(enemyObj, stacks):
 			enemyObj.get_node("Health").dmg(5)
 			return stacks - 1,
@@ -61,6 +66,9 @@ static func apply(enemy_obj, status_name, amount := 1):
 		return
 	var statuses = get_statuses(enemy_obj)
 	statuses[status_name] = statuses.get(status_name, 0) + amount
+	var data = STATUSES[status_name]
+	if data.has("sound"):
+		sfx.play(data.sound, data.get("volume", .05))
 	update_visuals(enemy_obj)
 
 static func get_stacks(enemy_obj, status_name) -> int:

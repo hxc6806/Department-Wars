@@ -18,6 +18,7 @@ var floor_index := 0
 var layouts: Array = []
 var backdrop: CanvasLayer
 var backdrop_image: TextureRect
+var music: AudioStreamPlayer
 var route_dialog: CanvasLayer
 ## Show the character deck pick before the map (tests turn this off).
 var choose_starting_deck := true
@@ -33,6 +34,7 @@ func _ready() -> void:
   rng.randomize()
   for i in Floors.FLOORS.size(): layouts.append(Floors.generate(rng))
  _add_floor_background()
+ _play_floor_music()
  map_layer=CanvasLayer.new()
  map_layer.layer=20
  add_child(map_layer)
@@ -222,7 +224,22 @@ func start_next_floor() -> void:
  state = "map"
  _build_map()
  _add_floor_background()
+ _play_floor_music()
  _show_map()
+
+## Loops the current floor's track on the Music bus, so the options volume slider controls it.
+func _play_floor_music() -> void:
+ if not is_instance_valid(music):
+  music = AudioStreamPlayer.new()
+  music.bus = &"Music"
+  music.finished.connect(music.play)
+  add_child(music)
+ var floor_data: Dictionary = Floors.FLOORS[floor_index]
+ var path: String = floor_data.music
+ music.stream = load(path) if ResourceLoader.exists(path) else null
+ # Player volume x Music bus volume (the slider), so 0.2 here at a 50% slider plays at 10%.
+ music.volume_db = linear_to_db(floor_data.get("volume", 1.0))
+ if music.stream: music.play()
 
 ## Full-screen floor image shown behind battles and rewards.
 func _add_floor_background() -> void:

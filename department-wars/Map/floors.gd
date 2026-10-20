@@ -13,9 +13,10 @@ const POSITIONS = {
  "boss": Vector2(490,25)
 }
 const FLOORS = [
- {"name": "BUSINESS DEPARTMENT", "background": "res://Assets/Maps/business_department.png"},
- {"name": "COMPUTER DEPARTMENT", "background": "res://Assets/Maps/computer_department.png"},
- {"name": "MEDICAL DEPARTMENT", "background": "res://Assets/Maps/medical_department.png"},
+# "volume" is the track's own loudness (1.0 = 100%). The options slider multiplies it at runtime.
+ {"name": "BUSINESS DEPARTMENT", "background": "res://Assets/Maps/business_department.png", "music": "res://Assets/Music/Business_Department.mp3", "volume": 0.25},
+ {"name": "COMPUTER DEPARTMENT", "background": "res://Assets/Maps/computer_department.png", "music": "res://Assets/Music/Computer_Department.mp3", "volume": .35},
+ {"name": "MEDICAL DEPARTMENT", "background": "res://Assets/Maps/medical_department.png", "music": "res://Assets/Music/Medical_Department.mp3", "volume": .45},
 ]
 # Keys are the internal node types used by run_setup.gd; "name" is what the map shows.
 const TYPES = {
